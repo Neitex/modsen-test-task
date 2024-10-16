@@ -1,0 +1,25 @@
+version: '3.5'
+
+services:
+  database:
+    container_name: bookstore-postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: bookstore
+      POSTGRES_PASSWORD: bookstore
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-data:/data/postgres
+  rabbitmq:
+    container_name: bookstore-rabbit
+    image: rabbitmq:4
+    environment:
+      RABBITMQ_DEFAULT_USER: bookstore
+      RABBITMQ_DEFAULT_PASS: bookstore
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+
