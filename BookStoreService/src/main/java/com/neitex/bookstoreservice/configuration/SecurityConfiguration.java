@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,8 +21,8 @@ public class SecurityConfiguration {
         authorizeRequests.requestMatchers("/**").authenticated()
             .dispatcherTypeMatchers(DispatcherType.ERROR)
             .permitAll()
-            .requestMatchers("/token/issue").permitAll()
-    ).addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    ).addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).cors(
+        AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable);
     return http.build();
   }
 }

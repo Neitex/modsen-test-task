@@ -1,10 +1,10 @@
-package com.neitex.bookstoreservice.dto;
+package com.neitex.userService.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AccessTokenResponseDTO {
+public class JwtResponseDTO {
   private String token;
 }

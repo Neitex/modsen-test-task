@@ -12,14 +12,38 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./postgres-data:/data/postgres
-  rabbitmq:
-    container_name: bookstore-rabbit
-    image: rabbitmq:4
-    environment:
-      RABBITMQ_DEFAULT_USER: bookstore
-      RABBITMQ_DEFAULT_PASS: bookstore
+  eureka:
+    container_name: bookstore-eureka
+    build:
+      dockerfile: DiscoveryService/Dockerfile
+  config:
+    container_name: bookstore-config
+    build:
+      dockerfile: ConfigurationService/Dockerfile
+    volumes:
+      - ./configuration:/opt/config
+  userService:
+    container_name: userService
+    build:
+      dockerfile: UserService/Dockerfile
     ports:
-      - "5672:5672"
-      - "15672:15672"
-
-
+      - "8081:8081"
+    depends_on:
+      - database
+      - eureka
+      - config
+    environment:
+      SERVER_PORT: 8081
+  bookstore:
+    container_name: bookstore
+    build:
+      dockerfile: BookstoreService/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - eureka
+      - userService
+      - config
+    environment:
+      SERVER_PORT: 8080
