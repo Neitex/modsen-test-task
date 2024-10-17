@@ -1,6 +1,7 @@
-FROM eclipse-temurin:17-alpine as builder
+FROM eclipse-temurin:17-alpine AS builder
 COPY . /app
 WORKDIR /app
+ENV GRADLE_USER_HOME=/app/.gradle
 RUN ./gradlew bootJar
 
 FROM eclipse-temurin:17-alpine

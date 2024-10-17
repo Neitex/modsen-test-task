@@ -1,18 +1,20 @@
 package com.neitex.userService.controller;
 
-import com.neitex.userService.dto.JwtResponseDTO;
+import com.neitex.userService.dto.JwtDTO;
 import com.neitex.userService.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/validation")
+@RestController
+@RequestMapping("/validation")
 @AllArgsConstructor
 public class TokenValidationController {
   private final UserService userService;
 
   @PostMapping("/validate")
-  public JwtResponseDTO validateToken(String token) {
-    return new JwtResponseDTO(userService.exchangeTokenToUserInfo(token).orElse(null));
+  public JwtDTO validateToken(JwtDTO token) {
+    return new JwtDTO(userService.exchangeTokenToUserInfo(token.getToken()).orElse(null));
   }
 }

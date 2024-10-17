@@ -4,18 +4,20 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.neitex.userService.model.User;
 import java.util.Date;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
-  @Value("${jwt.secret}")
-  private String secret;
+  private final Long expiration;
 
-  @Value("${jwt.expiration}")
-  private Long expiration;
+  private final Algorithm algorithm;
 
-  private final Algorithm algorithm = Algorithm.HMAC256(secret);
+  public JwtService(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") Long expiration) {
+    this.expiration = expiration;
+    this.algorithm = Algorithm.HMAC256(secret);
+  }
 
   public String issueAuthToken(User user) {
     return JWT.create()
@@ -60,5 +62,7 @@ public class JwtService {
     }
   }
 
-
+  public static String generateTokenSalt() {
+    return RandomStringUtils.random(16);
+  }
 }

@@ -14,20 +14,34 @@ services:
       - ./postgres-data:/data/postgres
   eureka:
     container_name: bookstore-eureka
+    image: bookstore-eureka
     build:
-      dockerfile: DiscoveryService/Dockerfile
+      context: DiscoveryService/
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
   config:
     container_name: bookstore-config
+    image: bookstore-config
     build:
-      dockerfile: ConfigurationService/Dockerfile
+      context: ConfigurationService/
+      dockerfile: Dockerfile
+    depends_on:
+      - eureka
+    ports:
+        - "8888:8888"
+    restart: on-failure
     volumes:
       - ./configuration:/opt/config
   userService:
     container_name: userService
+    image: bookstore-user-service
     build:
-      dockerfile: UserService/Dockerfile
+      context: UserService/
+      dockerfile: Dockerfile
     ports:
       - "8081:8081"
+    restart: on-failure
     depends_on:
       - database
       - eureka
@@ -36,14 +50,34 @@ services:
       SERVER_PORT: 8081
   bookstore:
     container_name: bookstore
+    image: bookstore-bookstore-service
     build:
-      dockerfile: BookstoreService/Dockerfile
+      context: BookStoreService/
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    restart: on-failure
+    depends_on:
+      - database
+      - eureka
+      - userService
+      - config
+      - library
+    environment:
+      SERVER_PORT: 8080
+  library:
+    container_name: library
+    image: bookstore-library-service
+    build:
+      context: LibraryService/
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    restart: on-failure
     depends_on:
       - database
       - eureka
       - userService
       - config
     environment:
-      SERVER_PORT: 8080
+      SERVER_PORT: 8082

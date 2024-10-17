@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service public class JwtService {
-  @Value("${jwt.secret}")
-  private String jwtSigningKey;
 
-  private final Algorithm algorithm = Algorithm.HMAC256(jwtSigningKey);
+  private final Algorithm algorithm;
+  public JwtService(@Value("${jwt.secret}") String jwtSigningKey) {
+    algorithm = Algorithm.HMAC256(jwtSigningKey);
+  }
 
   public GlobalUserDetails getUserDetails(
       String token) { // kind of dirty, but I'm not sure book storage microservice should have users

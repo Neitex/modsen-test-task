@@ -1,1 +1,1 @@
-rootProject.name = "BookStoreService"
+rootProject.name = "bookStore"

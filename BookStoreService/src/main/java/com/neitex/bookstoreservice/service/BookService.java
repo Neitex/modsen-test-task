@@ -1,7 +1,9 @@
 package com.neitex.bookstoreservice.service;
 
+import com.neitex.bookstoreservice.client.LibraryClient;
 import com.neitex.bookstoreservice.dto.BookRequestDTO;
 import com.neitex.bookstoreservice.dto.BookResponseDTO;
+import com.neitex.bookstoreservice.dto.BookUpdateRequestDTO;
 import com.neitex.bookstoreservice.entity.Author;
 import com.neitex.bookstoreservice.entity.Book;
 import com.neitex.bookstoreservice.exception.AuthorDoesNotExist;
@@ -16,8 +18,6 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.amqp.core.Exchange;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,9 +25,8 @@ import org.springframework.stereotype.Service;
 public class BookService {
   private final BookRepository bookRepository;
   private final AuthorRepository authorRepository;
-  private final RabbitTemplate rabbitTemplate;
-  private final Exchange exchange;
   private final ModelMapper modelMapper;
+  private final LibraryClient libraryClient;
 
   public Optional<BookResponseDTO> findBookById(Long id) {
     return bookRepository.findById(id).map(book -> modelMapper.map(book, BookResponseDTO.class));
@@ -87,7 +86,7 @@ public class BookService {
     book.setTitle(bookRequestDTO.getTitle());
     book.setAuthor(author.get());
     Book saved =  bookRepository.save(book);
-    rabbitTemplate.convertAndSend(exchange.getName(), "create", saved);
+    libraryClient.updateBook(new BookUpdateRequestDTO(saved.getId(), BookUpdateRequestDTO.BookUpdateType.CREATED));
     return modelMapper.map(saved, BookResponseDTO.class);
   }
 
@@ -95,7 +94,7 @@ public class BookService {
     if (!bookExistsById(id)) {
       return;
     }
-    rabbitTemplate.convertAndSend(exchange.getName(), "delete", id);
+    libraryClient.updateBook(new BookUpdateRequestDTO(id, BookUpdateRequestDTO.BookUpdateType.DELETED));
     bookRepository.deleteById(id);
   }
 
