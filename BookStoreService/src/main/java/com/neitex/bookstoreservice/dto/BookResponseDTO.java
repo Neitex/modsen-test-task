@@ -9,4 +9,5 @@ public class BookResponseDTO {
   private String title;
   private String ISBN;
   private Author author;
+  private String genre;
 }

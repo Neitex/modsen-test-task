@@ -1,5 +1,6 @@
 package com.neitex.bookstoreservice.security;
 
+import com.neitex.bookstoreservice.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

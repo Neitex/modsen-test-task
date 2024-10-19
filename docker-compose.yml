@@ -17,7 +17,7 @@ services:
     image: bookstore-eureka
     build:
       context: DiscoveryService/
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
     ports:
       - "8761:8761"
   config:
@@ -25,7 +25,7 @@ services:
     image: bookstore-config
     build:
       context: ConfigurationService/
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
     depends_on:
       - eureka
     ports:
@@ -34,11 +34,11 @@ services:
     volumes:
       - ./configuration:/opt/config
   userService:
-    container_name: userService
+    container_name: bookstore-user-service
     image: bookstore-user-service
     build:
       context: UserService/
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
     ports:
       - "8081:8081"
     restart: on-failure
@@ -49,11 +49,11 @@ services:
     environment:
       SERVER_PORT: 8081
   bookstore:
-    container_name: bookstore
+    container_name: bookstore-bookstore-service
     image: bookstore-bookstore-service
     build:
       context: BookStoreService/
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
     ports:
       - "8080:8080"
     restart: on-failure
@@ -66,11 +66,11 @@ services:
     environment:
       SERVER_PORT: 8080
   library:
-    container_name: library
+    container_name: bookstore-library-service
     image: bookstore-library-service
     build:
       context: LibraryService/
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
     ports:
       - "8082:8082"
     restart: on-failure

@@ -1,5 +1,6 @@
 package com.neitex.library.service;
 
+import com.neitex.library.dto.BookLeaseRequestDTO;
 import com.neitex.library.dto.BookLeaseResponseDTO;
 import com.neitex.library.exception.BookLeaseAlreadyExistsException;
 import com.neitex.library.model.BookLease;
@@ -19,26 +20,26 @@ import org.springframework.stereotype.Service;
         BookLeaseResponseDTO.class);
   }
 
-  public BookLeaseResponseDTO createBookLease(Long bookId) {
+  public void createBookLease(Long bookId) {
     if (bookLeaseRepository.existsById(bookId)) {
       throw new BookLeaseAlreadyExistsException("Book lease with ID " + bookId + " already exists");
     }
     BookLease bookLease = new BookLease();
     bookLease.setBookId(bookId);
-    return modelMapper.map(bookLeaseRepository.save(bookLease), BookLeaseResponseDTO.class);
+    bookLeaseRepository.save(bookLease);
   }
 
   public void deleteBookLease(Long bookId) {
     bookLeaseRepository.deleteById(bookId);
   }
 
-  public BookLeaseResponseDTO updateBookLease(Long bookId, BookLeaseResponseDTO bookLeaseResponseDTO) {
+  public BookLeaseResponseDTO updateBookLease(Long bookId, BookLeaseRequestDTO bookLeaseRequestDTO) {
     BookLease bookLease = bookLeaseRepository.findById(bookId).orElseThrow();
-    if (bookLeaseResponseDTO.getLeaseDate() != null) {
-      bookLease.setLeaseDate(bookLeaseResponseDTO.getLeaseDate());
+    if (bookLeaseRequestDTO.getLeaseDate() != null) {
+      bookLease.setLeaseDate(bookLeaseRequestDTO.getLeaseDate());
     }
-    if (bookLeaseResponseDTO.getReturnDate() != null) {
-      bookLease.setReturnDate(bookLeaseResponseDTO.getReturnDate());
+    if (bookLeaseRequestDTO.getReturnDate() != null) {
+      bookLease.setReturnDate(bookLeaseRequestDTO.getReturnDate());
     }
     return modelMapper.map(bookLeaseRepository.save(bookLease), BookLeaseResponseDTO.class);
   }

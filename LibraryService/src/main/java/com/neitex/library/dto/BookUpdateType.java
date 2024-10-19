@@ -1,4 +1,4 @@
-package com.neitex.library.model;
+package com.neitex.library.dto;
 
 public enum BookUpdateType {
   CREATED,

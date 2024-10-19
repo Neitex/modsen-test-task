@@ -63,6 +63,6 @@ public class JwtService {
   }
 
   public static String generateTokenSalt() {
-    return RandomStringUtils.random(16);
+    return RandomStringUtils.randomAlphanumeric(16);
   }
 }

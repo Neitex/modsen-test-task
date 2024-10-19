@@ -1,10 +1,11 @@
-package com.neitex.bookstoreservice.security;
+package com.neitex.bookstoreservice.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.neitex.bookstoreservice.exception.BadJWTException;
+import com.neitex.bookstoreservice.security.GlobalUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

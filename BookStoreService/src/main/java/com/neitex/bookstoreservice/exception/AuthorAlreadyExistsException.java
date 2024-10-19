@@ -1,7 +1,10 @@
 package com.neitex.bookstoreservice.exception;
 
-public class AuthorAlreadyExistsException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+public class AuthorAlreadyExistsException extends ResponseStatusException {
   public AuthorAlreadyExistsException(String message) {
-    super(message);
+    super(HttpStatus.CONFLICT, message);
   }
 }

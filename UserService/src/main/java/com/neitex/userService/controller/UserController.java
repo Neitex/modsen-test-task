@@ -4,7 +4,6 @@ import com.neitex.userService.dto.UserRequestDTO;
 import com.neitex.userService.dto.UserResponseDTO;
 import com.neitex.userService.service.UserService;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +27,12 @@ public class UserController {
 
   @GetMapping("/{id}")
   public UserResponseDTO getUserById(@PathVariable("id") Long id) {
-    return userService.getUserById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
+    return userService.getUserById(id);
   }
 
   @GetMapping("/by-login/{login}")
   public UserResponseDTO getUserByLogin(@PathVariable("login") String login) {
-    return userService.getUserByLogin(login).orElseThrow(() -> new NoSuchElementException("User not found"));
+    return userService.getUserByLogin(login);
   }
 
   @PostMapping("/{id}")

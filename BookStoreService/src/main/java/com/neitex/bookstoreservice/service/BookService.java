@@ -33,7 +33,8 @@ public class BookService {
   }
 
   public Optional<BookResponseDTO> findBookByISBN(String ISBN) {
-    return bookRepository.findBookByISBN(ISBN).map(book -> modelMapper.map(book, BookResponseDTO.class));
+    return bookRepository.findBookByISBN(ISBN)
+        .map(book -> modelMapper.map(book, BookResponseDTO.class));
   }
 
   public boolean bookExistsById(Long id) {
@@ -60,7 +61,8 @@ public class BookService {
     if (bookRequestDTO.getAuthorId() != null) {
       Optional<Author> author = authorRepository.findById(bookRequestDTO.getAuthorId());
       if (author.isEmpty()) {
-        throw new AuthorDoesNotExist(String.format("Author with ID %s does not exist", bookRequestDTO.getAuthorId()));
+        throw new AuthorDoesNotExist(
+            String.format("Author with ID %s does not exist", bookRequestDTO.getAuthorId()));
       }
       existingBook.setAuthor(author.get());
     }
@@ -70,7 +72,8 @@ public class BookService {
 
   public BookResponseDTO createBook(BookRequestDTO bookRequestDTO) {
     Objects.requireNonNull(bookRequestDTO, "Book cannot be null");
-    if(NullUtils.anyNull(bookRequestDTO.getISBN(), bookRequestDTO.getTitle(), bookRequestDTO.getAuthorId())){
+    if (NullUtils.anyNull(bookRequestDTO.getISBN(), bookRequestDTO.getTitle(),
+        bookRequestDTO.getAuthorId())) {
       throw new MissingFieldException("ISBN, title and author ID are required");
     }
     if (bookExistsByISBN(bookRequestDTO.getISBN())) {
@@ -79,14 +82,22 @@ public class BookService {
     }
     Optional<Author> author = authorRepository.findById(bookRequestDTO.getAuthorId());
     if (author.isEmpty()) {
-      throw new AuthorDoesNotExist(String.format("Author with ID %s does not exist", bookRequestDTO.getAuthorId()));
+      throw new AuthorDoesNotExist(
+          String.format("Author with ID %s does not exist", bookRequestDTO.getAuthorId()));
     }
     Book book = new Book();
     book.setISBN(bookRequestDTO.getISBN());
     book.setTitle(bookRequestDTO.getTitle());
     book.setAuthor(author.get());
-    Book saved =  bookRepository.save(book);
-    libraryClient.updateBook(new BookUpdateRequestDTO(saved.getId(), BookUpdateRequestDTO.BookUpdateType.CREATED));
+    book.setGenre(bookRequestDTO.getGenre());
+    Book saved = bookRepository.save(book);
+    try {
+      libraryClient.updateBook(
+          new BookUpdateRequestDTO(saved.getId(), BookUpdateRequestDTO.BookUpdateType.CREATED));
+    } catch (Exception e) {
+      bookRepository.delete(saved);
+      throw e;
+    }
     return modelMapper.map(saved, BookResponseDTO.class);
   }
 
@@ -94,11 +105,15 @@ public class BookService {
     if (!bookExistsById(id)) {
       return;
     }
-    libraryClient.updateBook(new BookUpdateRequestDTO(id, BookUpdateRequestDTO.BookUpdateType.DELETED));
+    libraryClient.updateBook(
+        new BookUpdateRequestDTO(id, BookUpdateRequestDTO.BookUpdateType.DELETED));
     bookRepository.deleteById(id);
   }
 
   public List<BookResponseDTO> getBooks() {
-    return bookRepository.findAll().stream().map(book -> modelMapper.map(book, BookResponseDTO.class)).toList();
+    return bookRepository.findAll()
+        .stream()
+        .map(book -> modelMapper.map(book, BookResponseDTO.class))
+        .toList();
   }
 }

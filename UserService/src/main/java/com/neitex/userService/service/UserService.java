@@ -3,6 +3,7 @@ package com.neitex.userService.service;
 import com.neitex.userService.dto.UserRequestDTO;
 import com.neitex.userService.dto.UserResponseDTO;
 import com.neitex.userService.exception.BadUsernameOrLoginException;
+import com.neitex.userService.exception.NoSuchUserException;
 import com.neitex.userService.exception.UsernameTakenException;
 import com.neitex.userService.model.User;
 import com.neitex.userService.repository.UserRepository;
@@ -23,14 +24,14 @@ public class UserService {
   private final ModelMapper modelMapper;
   private final JwtService jwtService;
 
-  public Optional<UserResponseDTO> getUserById(Long id) {
+  public UserResponseDTO getUserById(Long id) {
     return userRepository.findById(id)
-        .map(user -> modelMapper.map(user, UserResponseDTO.class));
+        .map(user -> modelMapper.map(user, UserResponseDTO.class)).orElseThrow(() -> new NoSuchUserException("User not found"));
   }
 
-  public Optional<UserResponseDTO> getUserByLogin(String login) {
+  public UserResponseDTO getUserByLogin(String login) {
     return userRepository.findByLogin(login)
-        .map(user -> modelMapper.map(user, UserResponseDTO.class));
+        .map(user -> modelMapper.map(user, UserResponseDTO.class)).orElseThrow(() -> new NoSuchUserException("User not found"));
   }
 
   public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
@@ -93,7 +94,7 @@ public class UserService {
       return Optional.empty();
     }
     Optional<User> user = userRepository.findById(id);
-    if (user.isEmpty() || jwtService.verifyAuthToken(token, user.get())) {
+    if (user.isEmpty() || !jwtService.verifyAuthToken(token, user.get())) {
       return Optional.empty();
     }
     return Optional.of(jwtService.issueUserDataToken(user.get()));

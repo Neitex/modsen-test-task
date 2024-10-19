@@ -1,7 +1,10 @@
 package com.neitex.bookstoreservice.exception;
 
-public class AuthorDoesNotExist extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+public class AuthorDoesNotExist extends ResponseStatusException {
   public AuthorDoesNotExist(String message) {
-    super(message);
+    super(HttpStatus.NOT_FOUND, message);
   }
 }
