@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient("library") public interface LibraryClient {
-  @RequestMapping(value = "/books-lease/updates", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+  @RequestMapping(value = "/internal-books-lease/updates", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
   void updateBook(BookUpdateRequestDTO bookUpdateRequestDTO);
 }

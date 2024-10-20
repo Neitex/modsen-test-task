@@ -65,6 +65,20 @@ services:
       - library
     environment:
       SERVER_PORT: 8080
+  gateway:
+    container_name: bookstore-gateway-service
+    image: bookstore-gateway-service
+    build:
+      context: GatewayService/
+      dockerfile: ../Dockerfile
+    ports:
+      - "8083:8083"
+    restart: on-failure
+    depends_on:
+      - eureka
+      - config
+    environment:
+      SERVER_PORT: 8083
   library:
     container_name: bookstore-library-service
     image: bookstore-library-service

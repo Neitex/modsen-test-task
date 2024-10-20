@@ -10,26 +10,36 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
-  private final Long expiration;
+  /**
+   * Expiration time for user-facing tokens in milliseconds (usually much longer than application tokens)
+   */
+  private final Long userTokenExpiration;
+  /**
+   * Expiration time for internal tokens in milliseconds (should be short-lived, like 2 minutes)
+   */
+  private final Long applicationTokenExpiration;
 
   private final Algorithm algorithm;
 
-  public JwtService(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") Long expiration) {
-    this.expiration = expiration;
+  public JwtService(@Value("${jwt.secret}") String secret,
+      @Value("${jwt.expiration.user}") Long userTokenExpiration,
+      @Value("${jwt.expiration.application}") Long applicationTokenExpiration) {
+    this.userTokenExpiration = userTokenExpiration;
+    this.applicationTokenExpiration = applicationTokenExpiration;
     this.algorithm = Algorithm.HMAC256(secret);
   }
 
   public String issueAuthToken(User user) {
     return JWT.create()
         .withSubject(user.getId().toString())
-        .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
+        .withExpiresAt(new Date(System.currentTimeMillis() + userTokenExpiration))
         .withAudience("bookstore")
         .withClaim("login", user.getLogin())
         .withClaim("s", user.getTokenSalt())
         .sign(algorithm);
   }
 
-  public boolean verifyAuthToken(String token, User user){
+  public boolean verifyAuthToken(String token, User user) {
     try {
       JWT.require(algorithm)
           .withSubject(user.getId().toString())
@@ -46,7 +56,7 @@ public class JwtService {
   public String issueUserDataToken(User user) {
     return JWT.create()
         .withSubject(user.getId().toString())
-        .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
+        .withExpiresAt(new Date(System.currentTimeMillis() + applicationTokenExpiration))
         .withAudience("bookstore")
         .withClaim("login", user.getLogin())
         .withClaim("name", user.getName())

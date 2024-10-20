@@ -2,9 +2,6 @@ package com.neitex.library.controller;
 
 import com.neitex.library.dto.BookLeaseRequestDTO;
 import com.neitex.library.dto.BookLeaseResponseDTO;
-import com.neitex.library.dto.BookLeaseUpdateRequestDTO;
-import com.neitex.library.dto.BookLeaseUpdateResponseDTO;
-import com.neitex.library.dto.BookUpdateType;
 import com.neitex.library.service.BookLeaseService;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,16 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class BookLeaseController {
   private final BookLeaseService bookLeaseService;
-
-  @PostMapping("/updates")
-  public BookLeaseUpdateResponseDTO updateBook(@RequestBody BookLeaseUpdateRequestDTO bookLeaseUpdateRequestDTO) {
-    if (bookLeaseUpdateRequestDTO.getUpdateType() == BookUpdateType.DELETED) {
-      bookLeaseService.deleteBookLease(bookLeaseUpdateRequestDTO.getBookId());
-    } else {
-      bookLeaseService.createBookLease(bookLeaseUpdateRequestDTO.getBookId());
-    }
-    return new BookLeaseUpdateResponseDTO(true);
-  }
 
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
   @GetMapping("/leases")

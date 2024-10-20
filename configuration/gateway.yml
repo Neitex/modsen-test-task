@@ -1,0 +1,33 @@
+eureka:
+  client:
+    webclient:
+      enabled: true
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: users
+          uri: lb://userService
+          predicates:
+            - Path=/users/**
+          filters:
+            - JwtFilter
+        - id: users-login-register
+          uri: lb://userService
+          predicates:
+            - Path=/auth/login,/users
+        - id: bookstore
+          uri: lb://bookstore
+          predicates:
+            - Path=/books/**,/books,/author/**,/authors,/author
+          filters:
+            - JwtFilter
+        - id: library
+          uri: lb://library
+          predicates:
+            - Path=/books-lease/**
+          filters:
+            - JwtFilter

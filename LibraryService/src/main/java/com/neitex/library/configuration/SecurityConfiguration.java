@@ -20,6 +20,7 @@ public class SecurityConfiguration {
         .permitAll().dispatcherTypeMatchers(DispatcherType.ERROR).permitAll().requestMatchers("/**")
         .authenticated());
     http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable);
+    http.httpBasic(AbstractHttpConfigurer::disable);
     http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
