@@ -75,6 +75,9 @@ docker-compose up
 This command will start all the services and the application entry point will be available at
 `http://localhost:8083`.
 
+> Note: It may take some time before services start to work correctly (and gateway start responding correctly)
+> due to the time needed for services to register in Eureka and other to catch this up.
+
 Microservices themselves will be available at the following ports:
 
 - Eureka: `http://localhost:8761`
