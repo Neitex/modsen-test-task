@@ -1,0 +1,57 @@
+openapi: 3.1.0
+info:
+  title: Library Internal API
+  description: Library Internal API intended to be used by other microservices
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8082'
+    description: Local server entry point
+paths:
+  /internal-books-lease/updates:
+    post:
+      summary: Update book lease status
+      description: Updates the status of a book lease based on the update type. If the update type is `DELETED`, the book lease will be deleted. Otherwise, a new lease will be created.
+      operationId: updateBookLeaseInternal
+      tags:
+        - Internal Book Lease
+      requestBody:
+        description: Book lease update information, including the book ID and update type.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookLeaseUpdateRequestDTO'
+      responses:
+        '200':
+          description: Book lease update successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookLeaseUpdateResponseDTO'
+        '400':
+          description: Invalid request.
+components:
+  schemas:
+    BookLeaseUpdateRequestDTO:
+      type: object
+      properties:
+        bookId:
+          type: integer
+          format: int64
+          description: The ID of the book to update.
+        updateType:
+          type: string
+          enum:
+            - CREATED
+            - DELETED
+          description: The type of update for the book lease (created or deleted).
+      required:
+        - bookId
+        - updateType
+
+    BookLeaseUpdateResponseDTO:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: Indicates if the operation was successful.

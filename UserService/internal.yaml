@@ -1,0 +1,42 @@
+openapi: 3.1.0
+info:
+  title: User Service Internal API
+  description: User Service Internal API
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8081'
+    description: Local server entry point
+paths:
+  /validation/validate:
+    post:
+      summary: Validate JWT token and exchange for user info
+      description: Validates user-supplied JWT token and, if valid, returns an internal JWT token containing user information. If invalid, `token` is null.
+      operationId: validateToken
+      tags:
+        - Token Validation
+      requestBody:
+        description: JWT token to validate.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtDTO'
+      responses:
+        '200':
+          description: User information based on the valid token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtDTO'
+        '400':
+          description: Bad request.
+components:
+  schemas:
+    JwtDTO:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT token to be validated.
+      required:
+        - token

@@ -5,6 +5,8 @@ import com.neitex.userService.dto.UserResponseDTO;
 import com.neitex.userService.service.UserService;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +48,7 @@ public class UserController {
   }
 
   @PutMapping
-  public UserResponseDTO createUser(@RequestBody UserRequestDTO user) {
-    return userService.createUser(user);
+  public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO user) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
   }
 }
