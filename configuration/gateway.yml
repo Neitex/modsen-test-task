@@ -12,17 +12,22 @@ spring:
         - id: users
           uri: lb://userService
           predicates:
-            - Path=/users/**
+            - Path=/users/{segment1},/users/{segment1}/{segment2}
           filters:
             - JwtFilter
-        - id: users-login-register
+        - id: users-login
           uri: lb://userService
           predicates:
-            - Path=/auth/login,/users
+            - Path=/auth/login
+        - id: users-create
+          uri: lb://userService
+          predicates:
+            - Path=/users
+            - Method=PUT
         - id: bookstore
           uri: lb://bookstore
           predicates:
-            - Path=/books/**,/books,/author/**,/authors,/author
+            - Path=/books/**,/books,/author/**,/authors,/author,/book,/book/**
           filters:
             - JwtFilter
         - id: library

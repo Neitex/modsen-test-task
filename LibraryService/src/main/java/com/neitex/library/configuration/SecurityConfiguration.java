@@ -16,7 +16,7 @@ public class SecurityConfiguration {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/books-lease/updates")
+    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/internal-books-lease/updates")
         .permitAll().dispatcherTypeMatchers(DispatcherType.ERROR).permitAll().requestMatchers("/**")
         .authenticated());
     http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable);
