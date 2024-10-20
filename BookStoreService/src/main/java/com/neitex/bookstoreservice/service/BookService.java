@@ -122,6 +122,9 @@ public class BookService {
   }
 
   public List<BookResponseDTO> findBooksByAuthor(Long authorId) {
+    if (!authorRepository.existsById(authorId)) {
+      throw new AuthorDoesNotExist(String.format("Author with ID %s does not exist", authorId));
+    }
     return bookRepository.findBooksByAuthorId(authorId)
         .stream()
         .map(book -> modelMapper.map(book, BookResponseDTO.class))

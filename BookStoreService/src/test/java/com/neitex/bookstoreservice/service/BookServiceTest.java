@@ -301,4 +301,10 @@ class BookServiceTest {
             modelMapper.map(bookB, BookResponseDTO.class), modelMapper.map(bookC, BookResponseDTO.class)).toArray(),
         bookService.findBooksByAuthor(1L).toArray());
   }
+
+  @Test
+  void getBooksByAuthorThrowsIfAuthorDoesNotExist(){
+    when(authorRepository.existsById(1L)).thenReturn(false);
+    assertThrows(AuthorDoesNotExist.class, () -> bookService.findBooksByAuthor(1L));
+  }
 }
