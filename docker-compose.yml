@@ -9,9 +9,11 @@ services:
     environment:
       POSTGRES_USER: bookstore
       POSTGRES_PASSWORD: bookstore
+      POSTGRES_MULTIPLE_DATABASES: "bookstore,bookstore: bookslease,bookstore: userservice,bookstore"
       PGDATA: /data/postgres
     volumes:
       - ./postgres-data:/data/postgres
+      - ./.postgres-init:/docker-entrypoint-initdb.d
   eureka:
     container_name: bookstore-eureka
     image: bookstore-eureka
