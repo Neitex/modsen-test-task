@@ -14,4 +14,8 @@ public interface BookRepository extends CrudRepository<Book, Long> {
   boolean existsByISBN(String ISBN);
   @NonNull
   List<Book> findAll();
+
+  List<Book> findBooksByAuthorId(Long authorId);
+
+  int countBooksByAuthorId(Long authorId);
 }

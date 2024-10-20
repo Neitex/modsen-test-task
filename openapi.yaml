@@ -328,6 +328,8 @@ paths:
       responses:
         '204':
           description: Author deleted successfully
+        '409':
+          description: Author has books associated with it. First delete those books.
 
   /books:
     get:
@@ -366,7 +368,29 @@ paths:
                 $ref: '#/components/schemas/BookResponseDTO'
         '404':
           description: Book not found
-
+  /books/by-author/{authorId}:
+    get:
+      summary: Get books by author ID
+      operationId: getBooksByAuthor
+      tags:
+        - Book
+      parameters:
+        - name: authorId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of books retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponseDTO'
+        '404':
+          description: Author not found
   /book:
     put:
       summary: Create a new book

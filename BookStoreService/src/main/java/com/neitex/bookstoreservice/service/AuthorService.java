@@ -5,6 +5,7 @@ import com.neitex.bookstoreservice.dto.AuthorResponseDTO;
 import com.neitex.bookstoreservice.entity.Author;
 import com.neitex.bookstoreservice.exception.AuthorAlreadyExistsException;
 import com.neitex.bookstoreservice.exception.AuthorDoesNotExist;
+import com.neitex.bookstoreservice.exception.AuthorHasBooksException;
 import com.neitex.bookstoreservice.repository.AuthorRepository;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class AuthorService {
   private final AuthorRepository authorRepository;
+  private final BookService bookService;
   private final ModelMapper modelMapper;
 
   public List<AuthorResponseDTO> getAuthors() {
@@ -54,6 +56,9 @@ public class AuthorService {
     Objects.requireNonNull(id);
     if (!authorRepository.existsById(id)) {
       throw new AuthorDoesNotExist("Author with id " + id + " not found");
+    }
+    if (bookService.countBooksByAuthor(id) > 0) {
+      throw new AuthorHasBooksException("Cannot delete author with books");
     }
     authorRepository.deleteById(id);
   }
