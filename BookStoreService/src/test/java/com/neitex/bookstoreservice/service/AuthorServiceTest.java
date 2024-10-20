@@ -8,6 +8,7 @@ import com.neitex.bookstoreservice.dto.AuthorResponseDTO;
 import com.neitex.bookstoreservice.entity.Author;
 import com.neitex.bookstoreservice.exception.AuthorAlreadyExistsException;
 import com.neitex.bookstoreservice.exception.AuthorDoesNotExist;
+import com.neitex.bookstoreservice.exception.AuthorHasBooksException;
 import com.neitex.bookstoreservice.repository.AuthorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,12 +23,14 @@ class AuthorServiceTest {
   private AuthorRepository authorRepository;
   private ModelMapper modelMapper;
   private AuthorService authorService;
+  private BookService bookService;
 
   @BeforeEach
   void setUp() {
     authorRepository = mock(AuthorRepository.class);
+    bookService = mock(BookService.class);
     modelMapper = new ModelMapper();
-    authorService = new AuthorService(authorRepository, modelMapper);
+    authorService = new AuthorService(authorRepository, bookService, modelMapper);
   }
 
   @Test
@@ -114,6 +117,7 @@ class AuthorServiceTest {
   @Test
   void deleteAuthorDeletesAuthorWhenExists() {
     when(authorRepository.existsById(1L)).thenReturn(true);
+    when(bookService.countBooksByAuthor(1L)).thenReturn(0);
 
     authorService.deleteAuthor(1L);
 
@@ -137,5 +141,13 @@ class AuthorServiceTest {
     when(authorRepository.findById(1L)).thenReturn(Optional.empty());
 
     assertThrows(AuthorDoesNotExist.class, () -> authorService.findAuthorById(1L));
+  }
+
+  @Test
+  void deleteAuthorThrowsExceptionWhenAuthorHasBooks() {
+    when(authorRepository.existsById(1L)).thenReturn(true);
+    when(bookService.countBooksByAuthor(1L)).thenReturn(1);
+
+    assertThrows(AuthorHasBooksException.class, () -> authorService.deleteAuthor(1L));
   }
 }

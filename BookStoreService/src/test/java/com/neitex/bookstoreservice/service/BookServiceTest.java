@@ -277,4 +277,28 @@ class BookServiceTest {
             modelMapper.map(bookB, BookResponseDTO.class), modelMapper.map(bookC, BookResponseDTO.class)).toArray(),
         bookService.getBooks().toArray());
   }
+
+  @Test
+  void getBooksByAuthorReturnsCorrectBooks() {
+    Author author = new Author();
+    author.setId(1L);
+    author.setName("Name");
+    Book bookA = new Book();
+    bookA.setId(1L);
+    bookA.setISBN("1");
+    bookA.setAuthor(author);
+    Book bookB = new Book();
+    bookB.setId(2L);
+    bookB.setISBN("2");
+    bookB.setAuthor(author);
+    Book bookC = new Book();
+    bookC.setId(3L);
+    bookC.setISBN("3");
+    bookC.setAuthor(author);
+    when(bookRepository.findBooksByAuthorId(1L)).thenReturn(List.of(bookA, bookB, bookC));
+    assertEquals(3, bookService.findBooksByAuthor(1L).size());
+    assertArrayEquals(List.of(modelMapper.map(bookA, BookResponseDTO.class),
+            modelMapper.map(bookB, BookResponseDTO.class), modelMapper.map(bookC, BookResponseDTO.class)).toArray(),
+        bookService.findBooksByAuthor(1L).toArray());
+  }
 }

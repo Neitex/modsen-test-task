@@ -40,6 +40,12 @@ public class BookController {
     return bookService.findBookByISBN(isbn);
   }
 
+  @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
+  @GetMapping("/book/by-author/{authorId}")
+  public List<BookResponseDTO> getBooksByAuthor(@PathVariable("authorId") Long authorId) {
+    return bookService.findBooksByAuthor(authorId);
+  }
+
   @PreAuthorize("hasRole('EDITOR')")
   @PutMapping("/book")
   public ResponseEntity<BookResponseDTO> createBook(@RequestBody BookRequestDTO book) {

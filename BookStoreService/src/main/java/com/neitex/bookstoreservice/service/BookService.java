@@ -116,4 +116,15 @@ public class BookService {
         .map(book -> modelMapper.map(book, BookResponseDTO.class))
         .toList();
   }
+
+  public int countBooksByAuthor(Long authorId) {
+    return bookRepository.countBooksByAuthorId(authorId);
+  }
+
+  public List<BookResponseDTO> findBooksByAuthor(Long authorId) {
+    return bookRepository.findBooksByAuthorId(authorId)
+        .stream()
+        .map(book -> modelMapper.map(book, BookResponseDTO.class))
+        .toList();
+  }
 }
