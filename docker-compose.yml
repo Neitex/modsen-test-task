@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_USER: bookstore
       POSTGRES_PASSWORD: bookstore
-      POSTGRES_MULTIPLE_DATABASES: "bookstore,bookstore: bookslease,bookstore: userservice,bookstore"
+      POSTGRES_MULTIPLE_DATABASES: "bookslease,bookstore: userservice,bookstore"
       PGDATA: /data/postgres
     volumes:
       - ./postgres-data:/data/postgres

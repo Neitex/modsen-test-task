@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 
   public BookLeaseResponseDTO updateBookLease(Long bookId,
       BookLeaseRequestDTO bookLeaseRequestDTO) {
-    BookLease bookLease = bookLeaseRepository.findById(bookId).orElseThrow();
+    BookLease bookLease = bookLeaseRepository.findById(bookId).orElseThrow(()-> new BookLeaseDoesNotExist("Book lease with ID " + bookId + " does not exist"));
     bookLease.setLeaseDate(bookLeaseRequestDTO.getLeaseDate());
     bookLease.setReturnDate(bookLeaseRequestDTO.getReturnDate());
     return modelMapper.map(bookLeaseRepository.save(bookLease), BookLeaseResponseDTO.class);
