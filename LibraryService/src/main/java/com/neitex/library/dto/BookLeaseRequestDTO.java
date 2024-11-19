@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class BookLeaseRequestDTO {
+
   private LocalDateTime leaseDate;
   private LocalDateTime returnDate;
 }

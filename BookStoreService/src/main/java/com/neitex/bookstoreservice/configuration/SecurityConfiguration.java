@@ -10,10 +10,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration @AllArgsConstructor public class SecurityConfiguration {
+@Configuration
+@AllArgsConstructor
+public class SecurityConfiguration {
+
   private final JwtAuthenticationFilter JwtAuthenticationFilter;
 
-  @Bean public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
             authorizeRequests -> authorizeRequests.dispatcherTypeMatchers(DispatcherType.ERROR,
                     DispatcherType.INCLUDE, DispatcherType.ASYNC, DispatcherType.FORWARD)

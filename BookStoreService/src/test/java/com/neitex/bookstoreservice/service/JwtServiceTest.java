@@ -1,5 +1,8 @@
 package com.neitex.bookstoreservice.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.neitex.bookstoreservice.exception.BadJWTException;
@@ -7,9 +10,6 @@ import com.neitex.bookstoreservice.security.GlobalUserDetails;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JwtServiceTest {
 

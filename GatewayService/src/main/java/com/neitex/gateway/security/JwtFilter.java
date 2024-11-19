@@ -13,18 +13,21 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtFilter
     extends AbstractGatewayFilterFactory<JwtFilter.Config> {
-  private final WebClient.Builder webClientBuilder;
 
-  @Override public Config newConfig() {
-    return new Config();
-  }
+  private final WebClient.Builder webClientBuilder;
 
   public JwtFilter(@Qualifier("lbWebClient") WebClient.Builder webClientBuilder) {
     super(Config.class);
     this.webClientBuilder = webClientBuilder;
   }
 
-  @Override public GatewayFilter apply(Config config) {
+  @Override
+  public Config newConfig() {
+    return new Config();
+  }
+
+  @Override
+  public GatewayFilter apply(Config config) {
     return (exchange, chain) -> {
       String token = exchange.getRequest().getHeaders().getFirst("Authorization");
       if (token != null && token.startsWith("Bearer ")) {
@@ -42,7 +45,8 @@ public class JwtFilter
               exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
               return exchange.getResponse().setComplete();
             }
-            exchange.getRequest().mutate().header("Authorization", "Bearer " + internalToken.getToken());
+            exchange.getRequest().mutate()
+                .header("Authorization", "Bearer " + internalToken.getToken());
             return chain.filter(exchange);
           });
     };

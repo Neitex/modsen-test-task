@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AuthorService {
+
   private final AuthorRepository authorRepository;
   private final BookService bookService;
   private final ModelMapper modelMapper;
@@ -28,11 +29,12 @@ public class AuthorService {
 
   public AuthorResponseDTO createAuthor(AuthorRequestDTO author) {
     Objects.requireNonNull(author);
-    if (author.getName() == null){
+    if (author.getName() == null) {
       throw new IllegalArgumentException("Author name cannot be null");
     }
     if (authorRepository.existsByName(author.getName())) {
-      throw new AuthorAlreadyExistsException("Author with name " + author.getName() + " already exists");
+      throw new AuthorAlreadyExistsException(
+          "Author with name " + author.getName() + " already exists");
     }
     Author newAuthor = new Author();
     newAuthor.setName(author.getName());

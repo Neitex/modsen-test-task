@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal-books-lease")
 @AllArgsConstructor
 public class InternalAPIController {
+
   private final BookLeaseService bookLeaseService;
 
   @PostMapping("/updates")

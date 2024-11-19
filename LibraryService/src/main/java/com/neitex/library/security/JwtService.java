@@ -8,9 +8,11 @@ import com.neitex.library.exception.BadJWTException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@Service public class JwtService {
+@Service
+public class JwtService {
 
   private final Algorithm algorithm;
+
   public JwtService(@Value("${jwt.secret}") String jwtSigningKey) {
     algorithm = Algorithm.HMAC256(jwtSigningKey);
   }

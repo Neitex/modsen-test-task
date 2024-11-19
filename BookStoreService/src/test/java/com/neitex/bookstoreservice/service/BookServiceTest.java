@@ -1,5 +1,18 @@
 package com.neitex.bookstoreservice.service;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.neitex.bookstoreservice.client.LibraryClient;
 import com.neitex.bookstoreservice.dto.BookRequestDTO;
 import com.neitex.bookstoreservice.dto.BookResponseDTO;
@@ -17,19 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class BookServiceTest {
 
@@ -274,7 +274,8 @@ class BookServiceTest {
     when(bookRepository.findAll()).thenReturn(List.of(bookA, bookB, bookC));
     assertEquals(3, bookService.getBooks().size());
     assertArrayEquals(List.of(modelMapper.map(bookA, BookResponseDTO.class),
-            modelMapper.map(bookB, BookResponseDTO.class), modelMapper.map(bookC, BookResponseDTO.class)).toArray(),
+            modelMapper.map(bookB, BookResponseDTO.class),
+            modelMapper.map(bookC, BookResponseDTO.class)).toArray(),
         bookService.getBooks().toArray());
   }
 
@@ -298,12 +299,13 @@ class BookServiceTest {
     when(bookRepository.findBooksByAuthorId(1L)).thenReturn(List.of(bookA, bookB, bookC));
     assertEquals(3, bookService.findBooksByAuthor(1L).size());
     assertArrayEquals(List.of(modelMapper.map(bookA, BookResponseDTO.class),
-            modelMapper.map(bookB, BookResponseDTO.class), modelMapper.map(bookC, BookResponseDTO.class)).toArray(),
+            modelMapper.map(bookB, BookResponseDTO.class),
+            modelMapper.map(bookC, BookResponseDTO.class)).toArray(),
         bookService.findBooksByAuthor(1L).toArray());
   }
 
   @Test
-  void getBooksByAuthorThrowsIfAuthorDoesNotExist(){
+  void getBooksByAuthorThrowsIfAuthorDoesNotExist() {
     when(authorRepository.existsById(1L)).thenReturn(false);
     assertThrows(AuthorDoesNotExist.class, () -> bookService.findBooksByAuthor(1L));
   }

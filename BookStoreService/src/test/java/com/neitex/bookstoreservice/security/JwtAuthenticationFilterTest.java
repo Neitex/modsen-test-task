@@ -1,19 +1,21 @@
 package com.neitex.bookstoreservice.security;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.neitex.bookstoreservice.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.io.IOException;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 class JwtAuthenticationFilterTest {
 
@@ -33,7 +35,8 @@ class JwtAuthenticationFilterTest {
   }
 
   @Test
-  void doFilterInternal_NoAuthHeader_ShouldProceedWithoutAuthentication() throws ServletException, IOException {
+  void doFilterInternal_NoAuthHeader_ShouldProceedWithoutAuthentication()
+      throws ServletException, IOException {
     when(request.getHeader(JwtAuthenticationFilter.HEADER_NAME)).thenReturn(null);
 
     jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
@@ -44,7 +47,8 @@ class JwtAuthenticationFilterTest {
   }
 
   @Test
-  void doFilterInternal_InvalidAuthHeader_ShouldProceedWithoutAuthentication() throws ServletException, IOException {
+  void doFilterInternal_InvalidAuthHeader_ShouldProceedWithoutAuthentication()
+      throws ServletException, IOException {
     when(request.getHeader(JwtAuthenticationFilter.HEADER_NAME)).thenReturn("InvalidHeader");
 
     jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
@@ -55,11 +59,14 @@ class JwtAuthenticationFilterTest {
   }
 
   @Test
-  void doFilterInternal_ValidJWT_UserAlreadyAuthenticated_ShouldNotAuthenticateAgain() throws ServletException, IOException {
-    when(request.getHeader(JwtAuthenticationFilter.HEADER_NAME)).thenReturn("Bearer valid-jwt-token");
+  void doFilterInternal_ValidJWT_UserAlreadyAuthenticated_ShouldNotAuthenticateAgain()
+      throws ServletException, IOException {
+    when(request.getHeader(JwtAuthenticationFilter.HEADER_NAME)).thenReturn(
+        "Bearer valid-jwt-token");
 
     // Simulate that there is already an authenticated user in SecurityContext
-    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("user", null, null);
+    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+        "user", null, null);
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
@@ -70,8 +77,10 @@ class JwtAuthenticationFilterTest {
   }
 
   @Test
-  void doFilterInternal_ValidJWT_UserNotAuthenticated_ShouldAuthenticateUser() throws ServletException, IOException {
-    when(request.getHeader(JwtAuthenticationFilter.HEADER_NAME)).thenReturn("Bearer valid-jwt-token");
+  void doFilterInternal_ValidJWT_UserNotAuthenticated_ShouldAuthenticateUser()
+      throws ServletException, IOException {
+    when(request.getHeader(JwtAuthenticationFilter.HEADER_NAME)).thenReturn(
+        "Bearer valid-jwt-token");
 
     // Simulate no user authenticated in SecurityContext
     SecurityContextHolder.getContext().setAuthentication(null);

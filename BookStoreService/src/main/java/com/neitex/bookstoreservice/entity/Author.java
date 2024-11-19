@@ -7,9 +7,14 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity @Table(name = "authors") @Getter @Setter
+@Entity
+@Table(name = "authors")
+@Getter
+@Setter
 public class Author {
-  @Id @GeneratedValue
+
+  @Id
+  @GeneratedValue
   private Long id;
   private String name;
 }

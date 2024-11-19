@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JWTTokenDTO {
-    private String token;
+
+  private String token;
 }

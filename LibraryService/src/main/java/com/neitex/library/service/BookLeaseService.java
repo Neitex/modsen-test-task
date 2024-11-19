@@ -12,7 +12,10 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-@Service @AllArgsConstructor public class BookLeaseService {
+@Service
+@AllArgsConstructor
+public class BookLeaseService {
+
   private final BookLeaseRepository bookLeaseRepository;
   private final ModelMapper modelMapper;
 
@@ -38,7 +41,8 @@ import org.springframework.stereotype.Service;
 
   public BookLeaseResponseDTO updateBookLease(Long bookId,
       BookLeaseRequestDTO bookLeaseRequestDTO) {
-    BookLease bookLease = bookLeaseRepository.findById(bookId).orElseThrow(()-> new BookLeaseDoesNotExist("Book lease with ID " + bookId + " does not exist"));
+    BookLease bookLease = bookLeaseRepository.findById(bookId).orElseThrow(
+        () -> new BookLeaseDoesNotExist("Book lease with ID " + bookId + " does not exist"));
     bookLease.setLeaseDate(bookLeaseRequestDTO.getLeaseDate());
     bookLease.setReturnDate(bookLeaseRequestDTO.getReturnDate());
     return modelMapper.map(bookLeaseRepository.save(bookLease), BookLeaseResponseDTO.class);

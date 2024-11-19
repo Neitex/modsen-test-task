@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookLeaseRepository extends JpaRepository<BookLease, Long> {
+
 }

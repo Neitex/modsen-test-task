@@ -1,7 +1,12 @@
 package com.neitex.bookstoreservice.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.neitex.bookstoreservice.dto.AuthorRequestDTO;
 import com.neitex.bookstoreservice.dto.AuthorResponseDTO;
@@ -10,13 +15,12 @@ import com.neitex.bookstoreservice.exception.AuthorAlreadyExistsException;
 import com.neitex.bookstoreservice.exception.AuthorDoesNotExist;
 import com.neitex.bookstoreservice.exception.AuthorHasBooksException;
 import com.neitex.bookstoreservice.repository.AuthorRepository;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
-
-import java.util.Optional;
-import java.util.List;
-import java.util.Collections;
 
 class AuthorServiceTest {
 
@@ -51,7 +55,8 @@ class AuthorServiceTest {
   void createAuthorThrowsExceptionWhenAuthorNameIsNull() {
     AuthorRequestDTO authorRequestDTO = new AuthorRequestDTO();
 
-    assertThrows(IllegalArgumentException.class, () -> authorService.createAuthor(authorRequestDTO));
+    assertThrows(IllegalArgumentException.class,
+        () -> authorService.createAuthor(authorRequestDTO));
   }
 
   @Test
@@ -60,7 +65,8 @@ class AuthorServiceTest {
     authorRequestDTO.setName("Existing Author");
     when(authorRepository.existsByName("Existing Author")).thenReturn(true);
 
-    assertThrows(AuthorAlreadyExistsException.class, () -> authorService.createAuthor(authorRequestDTO));
+    assertThrows(AuthorAlreadyExistsException.class,
+        () -> authorService.createAuthor(authorRequestDTO));
   }
 
   @Test

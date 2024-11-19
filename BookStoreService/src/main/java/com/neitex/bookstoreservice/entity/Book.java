@@ -11,9 +11,14 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@Getter @Setter @Entity @Table(name = "books")
+@Getter
+@Setter
+@Entity
+@Table(name = "books")
 public class Book {
-  @Id @GeneratedValue
+
+  @Id
+  @GeneratedValue
   private Long id;
   private String title;
   @Column(unique = true)

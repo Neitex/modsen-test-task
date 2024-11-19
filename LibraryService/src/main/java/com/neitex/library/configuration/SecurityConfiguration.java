@@ -13,12 +13,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @AllArgsConstructor
 public class SecurityConfiguration {
+
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/internal-books-lease/updates")
-        .permitAll().dispatcherTypeMatchers(DispatcherType.ERROR).permitAll().requestMatchers("/**")
-        .authenticated());
+    http.authorizeHttpRequests(
+        authorize -> authorize.requestMatchers("/internal-books-lease/updates")
+            .permitAll().dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+            .requestMatchers("/**")
+            .authenticated());
     http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable);
     http.httpBasic(AbstractHttpConfigurer::disable);
     http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

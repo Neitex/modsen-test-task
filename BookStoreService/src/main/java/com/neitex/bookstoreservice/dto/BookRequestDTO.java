@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class BookRequestDTO {
+
   private String title;
   private String ISBN;
   private Long authorId;

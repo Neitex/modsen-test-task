@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class BookController {
+
   private final BookService bookService;
 
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
@@ -55,7 +56,7 @@ public class BookController {
   @PreAuthorize("hasRole('EDITOR')")
   @PostMapping("/book/{id}")
   public BookResponseDTO updateBook(@PathVariable("id") Long id, @RequestBody BookRequestDTO book) {
-    return bookService.updateBook(id,book);
+    return bookService.updateBook(id, book);
   }
 
   @PreAuthorize("hasRole('EDITOR')")

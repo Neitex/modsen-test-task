@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/books-lease")
 @AllArgsConstructor
 public class BookLeaseController {
+
   private final BookLeaseService bookLeaseService;
 
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
@@ -34,7 +35,7 @@ public class BookLeaseController {
   @PreAuthorize("hasRole('EDITOR')")
   @PostMapping("/lease/{bookId}")
   public BookLeaseResponseDTO updateBookLease(@PathVariable("bookId") Long bookId, @RequestBody
-      BookLeaseRequestDTO bookLeaseRequestDTO) {
+  BookLeaseRequestDTO bookLeaseRequestDTO) {
     return bookLeaseService.updateBookLease(bookId, bookLeaseRequestDTO);
   }
 }

@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "book_lease")
 public class BookLease {
+
   @Id
   private Long bookId;
   private LocalDateTime leaseDate;
