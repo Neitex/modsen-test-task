@@ -2,16 +2,18 @@ package com.neitex.userService.service;
 
 import com.neitex.userService.dto.UserRequestDTO;
 import com.neitex.userService.dto.UserResponseDTO;
-import com.neitex.userService.exception.BadUsernameOrLoginException;
+import com.neitex.userService.exception.BadLoginCredentials;
 import com.neitex.userService.exception.NoSuchUserException;
 import com.neitex.userService.exception.UsernameTakenException;
 import com.neitex.userService.model.User;
 import com.neitex.userService.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,24 +21,27 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserService {
+
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final ModelMapper modelMapper;
   private final JwtService jwtService;
 
-  public UserResponseDTO getUserById(Long id) {
-    return userRepository.findById(id)
-        .map(user -> modelMapper.map(user, UserResponseDTO.class)).orElseThrow(() -> new NoSuchUserException("User not found"));
+  public UserResponseDTO getUserById(@NonNull Long id) {
+    return userRepository.findById(id).map(user -> modelMapper.map(user, UserResponseDTO.class))
+        .orElseThrow(() -> new NoSuchUserException("User not found"));
   }
 
-  public UserResponseDTO getUserByLogin(String login) {
+  public UserResponseDTO getUserByLogin(@NonNull String login) {
     return userRepository.findByLogin(login)
-        .map(user -> modelMapper.map(user, UserResponseDTO.class)).orElseThrow(() -> new NoSuchUserException("User not found"));
+        .map(user -> modelMapper.map(user, UserResponseDTO.class))
+        .orElseThrow(() -> new NoSuchUserException("User not found"));
   }
 
-  public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
-    Objects.requireNonNull(userRequestDTO.getLogin());
-    Objects.requireNonNull(userRequestDTO.getPassword());
+  @Transactional
+  public UserResponseDTO createUser(@NonNull UserRequestDTO userRequestDTO) {
+    Objects.requireNonNull(userRequestDTO.getLogin(), "Login cannot be null");
+    Objects.requireNonNull(userRequestDTO.getPassword(), "Password cannot be null");
     User user = modelMapper.map(userRequestDTO, User.class);
     if (userRepository.findByLogin(userRequestDTO.getLogin()).isPresent()) {
       throw new UsernameTakenException("User with such login already exists");
@@ -46,12 +51,15 @@ public class UserService {
     return modelMapper.map(userRepository.save(user), UserResponseDTO.class);
   }
 
-  public void deleteUser(Long id) {
+  @Transactional
+  public void deleteUser(@NonNull Long id) {
     userRepository.deleteById(id);
   }
 
-  public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
-    User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
+  @Transactional
+  public UserResponseDTO updateUser(@NonNull Long id, @NonNull UserRequestDTO userRequestDTO) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("User not found"));
     if (userRequestDTO.getLogin() != null) {
       if (userRepository.findByLogin(userRequestDTO.getLogin()).isPresent()) {
         throw new UsernameTakenException("User with such login already exists");
@@ -72,23 +80,21 @@ public class UserService {
   }
 
   public List<UserResponseDTO> getAllUsers() {
-    return userRepository.findAll()
-        .stream()
-        .map(user -> modelMapper.map(user, UserResponseDTO.class))
-        .toList();
+    return userRepository.findAll().stream()
+        .map(user -> modelMapper.map(user, UserResponseDTO.class)).toList();
   }
 
-  public String issueAuthToken(String login, String password) {
+  public String issueAuthToken(@NonNull String login, @NonNull String password) {
     User user = userRepository.findByLogin(login)
-        .orElseThrow(() -> new BadUsernameOrLoginException("Invalid login or password"));
+        .orElseThrow(() -> new BadLoginCredentials("Invalid login or password"));
     if (passwordEncoder.matches(password, user.getEncryptedPassword())) {
       return jwtService.issueAuthToken(user);
     } else {
-      throw new BadUsernameOrLoginException("Invalid login or password");
+      throw new BadLoginCredentials("Invalid login or password");
     }
   }
 
-  public Optional<String> exchangeTokenToUserInfo(String token) {
+  public Optional<String> exchangeTokenToUserInfo(@NonNull String token) {
     Long id = jwtService.getUserIdFromToken(token);
     if (id == null) {
       return Optional.empty();

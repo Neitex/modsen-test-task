@@ -35,7 +35,7 @@ services:
     restart: on-failure
     volumes:
       - ./configuration:/opt/config
-  userService:
+  users:
     container_name: bookstore-user-service
     image: bookstore-user-service
     build:
@@ -62,7 +62,7 @@ services:
     depends_on:
       - database
       - eureka
-      - userService
+      - users
       - config
       - library
     environment:
@@ -93,7 +93,7 @@ services:
     depends_on:
       - database
       - eureka
-      - userService
+      - users
       - config
     environment:
       SERVER_PORT: 8082

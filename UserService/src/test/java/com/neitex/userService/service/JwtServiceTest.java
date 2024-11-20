@@ -1,27 +1,28 @@
-package com.neitex.userService;
+package com.neitex.userService.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.neitex.userService.model.User;
 import com.neitex.userService.model.UserRole;
-import com.neitex.userService.service.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest
 class JwtServiceTest {
 
-  @MockBean
   private User user;
 
   private JwtService jwtService;
 
   @BeforeEach
   void setUp() {
-    jwtService = new JwtService("testSecret", 1000L);
+    user = mock(User.class);
+    jwtService = new JwtService("testSecret", 1000L, 1000L);
   }
 
   @Test

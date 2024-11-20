@@ -11,8 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class JwtFilter
-    extends AbstractGatewayFilterFactory<JwtFilter.Config> {
+public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
 
   private final WebClient.Builder webClientBuilder;
 
@@ -32,12 +31,15 @@ public class JwtFilter
       String token = exchange.getRequest().getHeaders().getFirst("Authorization");
       if (token != null && token.startsWith("Bearer ")) {
         token = token.substring(7);
+      } else {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        return exchange.getResponse().setComplete();
       }
-      return webClientBuilder.build().post()
-          .uri("http://userService/validation/validate")
-          .bodyValue(new JWTTokenDTO(token))
-          .retrieve()
-          .bodyToMono(JWTTokenDTO.class).flatMap(internalToken -> {
+      return webClientBuilder.build().post().uri("http://userService/validation/validate")
+          .bodyValue(new JWTTokenDTO(token)).retrieve().bodyToMono(JWTTokenDTO.class)
+          .switchIfEmpty(Mono.error(
+              new IllegalStateException("User Authentication server returned an empty response")))
+          .flatMap(internalToken -> {
             if (internalToken == null) {
               return Mono.error(new RuntimeException("Internal token is null"));
             }
