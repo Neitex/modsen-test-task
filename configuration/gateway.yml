@@ -27,7 +27,7 @@ spring:
         - id: bookstore
           uri: lb://bookstore
           predicates:
-            - Path=/books/**,/books,/author/**,/authors,/author,/book,/book/**
+            - Path=/books/**,/books,/authors/**,/authors,/book/**,/book
           filters:
             - JwtFilter
         - id: library
