@@ -61,8 +61,8 @@ public class BookService {
     if (bookRequestDTO.getIsbn() == null) {
       throw new MissingFieldException("ISBN is required");
     }
-    if (bookExistsByIsbn(existingBook.getIsbn()) && !bookRequestDTO.getIsbn()
-        .equals(existingBook.getIsbn())) {
+    if (!bookRequestDTO.getIsbn().equals(existingBook.getIsbn()) && bookExistsByIsbn(
+        bookRequestDTO.getIsbn())) {
       throw new BookAlreadyExistsException(
           String.format("Book with ISBN %s already exists", bookRequestDTO.getIsbn()));
     }

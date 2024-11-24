@@ -38,6 +38,7 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("com.h2database:h2:2.3.232")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
