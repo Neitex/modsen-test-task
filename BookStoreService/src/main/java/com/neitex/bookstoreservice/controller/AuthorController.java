@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,26 +28,26 @@ public class AuthorController {
     return authorService.getAuthors();
   }
 
-  @GetMapping("/author/{id}")
+  @GetMapping("/authors/{id}")
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
   public AuthorResponseDTO getAuthorById(@PathVariable("id") Long id) {
     return authorService.findAuthorById(id);
   }
 
-  @PutMapping("/author")
+  @PostMapping("/authors")
   @PreAuthorize("hasRole('EDITOR')")
   public ResponseEntity<AuthorResponseDTO> createAuthor(@RequestBody AuthorRequestDTO author) {
     return ResponseEntity.status(HttpStatus.CREATED).body(authorService.createAuthor(author));
   }
 
-  @PostMapping("/author/{id}")
+  @PatchMapping("/authors/{id}")
   @PreAuthorize("hasRole('EDITOR')")
   public AuthorResponseDTO updateAuthor(@PathVariable("id") Long id,
       @RequestBody AuthorRequestDTO author) {
     return authorService.updateAuthor(id, author);
   }
 
-  @DeleteMapping("/author/{id}")
+  @DeleteMapping("/authors/{id}")
   @PreAuthorize("hasRole('EDITOR')")
   public ResponseEntity<Void> deleteAuthor(@PathVariable("id") Long id) {
     authorService.deleteAuthor(id);

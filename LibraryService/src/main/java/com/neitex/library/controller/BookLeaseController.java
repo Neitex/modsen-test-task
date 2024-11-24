@@ -7,8 +7,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,13 +27,13 @@ public class BookLeaseController {
   }
 
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
-  @GetMapping("/lease/{bookId}")
+  @GetMapping("/leases/{bookId}")
   public BookLeaseResponseDTO getBookLease(@PathVariable("bookId") Long bookId) {
     return bookLeaseService.getBookLease(bookId);
   }
 
   @PreAuthorize("hasRole('EDITOR')")
-  @PostMapping("/lease/{bookId}")
+  @PatchMapping("/leases/{bookId}")
   public BookLeaseResponseDTO updateBookLease(@PathVariable("bookId") Long bookId, @RequestBody
   BookLeaseRequestDTO bookLeaseRequestDTO) {
     return bookLeaseService.updateBookLease(bookId, bookLeaseRequestDTO);

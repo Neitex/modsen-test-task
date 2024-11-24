@@ -46,7 +46,7 @@ paths:
                 $ref: '#/components/schemas/UserResponseDTO'
         '404':
           description: User not found
-    post:
+    patch:
       summary: Update user by ID
       operationId: updateUser
       tags:
@@ -108,7 +108,7 @@ paths:
         '404':
           description: User not found
   /users:
-    put:
+    post:
       summary: Create a new user
       operationId: createUser
       tags:
@@ -170,7 +170,7 @@ paths:
         - EDITOR
         - VIEWER
 
-  /books-lease/lease/{bookId}:
+  /books-lease/leases/{bookId}:
     get:
       summary: Get book lease by book ID
       operationId: getBookLeaseById
@@ -197,8 +197,7 @@ paths:
       x-security-roles:
         - EDITOR
         - VIEWER
-
-    post:
+    patch:
       summary: Update a book lease by book ID
       operationId: updateBookLease
       tags:
@@ -245,9 +244,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AuthorResponseDTO'
-
-  /author:
-    put:
+    post:
       summary: Create a new author
       operationId: createAuthor
       tags:
@@ -266,7 +263,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthorResponseDTO'
 
-  /author/{id}:
+  /authors/{id}:
     get:
       summary: Get author by ID
       operationId: getAuthorById
@@ -288,7 +285,7 @@ paths:
                 $ref: '#/components/schemas/AuthorResponseDTO'
         '404':
           description: Author not found
-    post:
+    patch:
       summary: Update an author by ID
       operationId: updateAuthor
       tags:
@@ -347,7 +344,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/BookResponseDTO'
 
-  /book/by-isbn/{isbn}:
+  /books/by-isbn/{isbn}:
     get:
       summary: Get book by ISBN
       operationId: getBookByISBN
@@ -392,7 +389,7 @@ paths:
         '404':
           description: Author not found
   /book:
-    put:
+    post:
       summary: Create a new book
       operationId: createBook
       tags:
@@ -411,7 +408,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BookResponseDTO'
 
-  /book/{id}:
+  /books/{id}:
     get:
       summary: Get book by ID
       operationId: getBookById
@@ -433,7 +430,7 @@ paths:
                 $ref: '#/components/schemas/BookResponseDTO'
         '404':
           description: Book not found
-    post:
+    patch:
       summary: Update a book by ID
       operationId: updateBook
       tags:
