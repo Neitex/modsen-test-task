@@ -804,9 +804,9 @@
 							]
 						},
 						{
-              "name": "Lease a book by ID",
+							"name": "Lease a book by ID",
 							"request": {
-                "method": "POST",
+								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -819,7 +819,7 @@
 								],
 								"body": {
 									"mode": "raw",
-                  "raw": "{\n  \"leaseDate\": \"2024-11-11T00:00:00\",\n  \"returnDate\": \"2024-11-20T00:00:00\"\n}",
+									"raw": "{\n  \"leaseDate\": \"2024-11-11T00:00:00\",\n  \"returnDate\": \"2024-11-20T00:00:00\"\n}",
 									"options": {
 										"raw": {
 											"headerFamily": "json",
@@ -828,208 +828,208 @@
 									}
 								},
 								"url": {
-                  "raw": "{{baseUrl}}/books-lease/leases/:bookId/lease",
+									"raw": "{{baseUrl}}/books-lease/leases/:bookId/lease",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"books-lease",
 										"leases",
-                    ":bookId",
-                    "lease"
-                  ],
-                  "variable": [
-                    {
-                      "key": "bookId",
-                      "value": "1",
-                      "description": "(Required) "
-                    }
-                  ]
-                }
-              },
-              "response": [
-                {
-                  "name": "Book lease updated successfully",
-                  "originalRequest": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Authorization",
-                        "value": "Bearer <token>",
-                        "description": "Added as a part of security scheme: bearer"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}",
-                      "options": {
-                        "raw": {
-                          "headerFamily": "json",
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/books-lease/lease/:bookId",
-                      "host": [
-                        "{{baseUrl}}"
-                      ],
-                      "path": [
-                        "books-lease",
-                        "lease",
-                        ":bookId"
-                      ],
-                      "variable": [
-                        {
-                          "key": "bookId"
-                        }
-                      ]
-                    }
-                  },
-                  "status": "OK",
-                  "code": 200,
-                  "_postman_previewlanguage": "json",
-                  "header": [
-                    {
-                      "key": "Content-Type",
-                      "value": "application/json"
-                    }
-                  ],
-                  "cookie": [],
-                  "body": "{\n  \"bookId\": \"<long>\",\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}"
-                },
-                {
-                  "name": "Forbidden. User does not have the required roles.",
-                  "originalRequest": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Authorization",
-                        "value": "Bearer <token>",
-                        "description": "Added as a part of security scheme: bearer"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}",
-                      "options": {
-                        "raw": {
-                          "headerFamily": "json",
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/books-lease/lease/:bookId",
-                      "host": [
-                        "{{baseUrl}}"
-                      ],
-                      "path": [
-                        "books-lease",
-                        "lease",
-                        ":bookId"
-                      ],
-                      "variable": [
-                        {
-                          "key": "bookId"
-                        }
-                      ]
-                    }
-                  },
-                  "status": "Forbidden",
-                  "code": 403,
-                  "_postman_previewlanguage": "text",
-                  "header": [],
-                  "cookie": [],
-                  "body": ""
-                },
-                {
-                  "name": "Book lease not found",
-                  "originalRequest": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Authorization",
-                        "value": "Bearer <token>",
-                        "description": "Added as a part of security scheme: bearer"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}",
-                      "options": {
-                        "raw": {
-                          "headerFamily": "json",
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/books-lease/lease/:bookId",
-                      "host": [
-                        "{{baseUrl}}"
-                      ],
-                      "path": [
-                        "books-lease",
-                        "lease",
-                        ":bookId"
-                      ],
-                      "variable": [
-                        {
-                          "key": "bookId"
-                        }
-                      ]
-                    }
-                  },
-                  "status": "Not Found",
-                  "code": 404,
-                  "_postman_previewlanguage": "text",
-                  "header": [],
-                  "cookie": [],
-                  "body": ""
-                }
-              ]
-            },
-            {
-              "name": "Return a book by ID",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/books-lease/leases/:bookId/return",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "books-lease",
-                    "leases",
-                    ":bookId",
-                    "return"
+										":bookId",
+										"lease"
+									],
+									"variable": [
+										{
+											"key": "bookId",
+											"value": "1",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Book lease updated successfully",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/books-lease/lease/:bookId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"books-lease",
+												"lease",
+												":bookId"
+											],
+											"variable": [
+												{
+													"key": "bookId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"bookId\": \"<long>\",\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}"
+								},
+								{
+									"name": "Forbidden. User does not have the required roles.",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/books-lease/lease/:bookId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"books-lease",
+												"lease",
+												":bookId"
+											],
+											"variable": [
+												{
+													"key": "bookId"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Book lease not found",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"leaseDate\": \"<dateTime>\",\n  \"returnDate\": \"<dateTime>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/books-lease/lease/:bookId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"books-lease",
+												"lease",
+												":bookId"
+											],
+											"variable": [
+												{
+													"key": "bookId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Return a book by ID",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/books-lease/leases/:bookId/return",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"books-lease",
+										"leases",
+										":bookId",
+										"return"
 									],
 									"variable": [
 										{
@@ -1955,7 +1955,7 @@
 						{
 							"name": "Update a book by ID",
 							"request": {
-								"method": "PATCH",
+								"method": "PUT",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -1968,7 +1968,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"title\": \"<string>\",\n  \"isbn\": \"<string>\",\n  \"authorId\": \"<long>\",\n  \"genre\": \"<string>\"\n}",
+									"raw": "{\n  \"title\": \"<string>\",\n  \"isbn\": \"<string>\",\n  \"description\": \"<string>\",\n  \"authorId\": \"<long>\",\n  \"genre\": \"<string>\"\n}",
 									"options": {
 										"raw": {
 											"headerFamily": "json",

@@ -457,7 +457,7 @@ paths:
                 $ref: '#/components/schemas/BookResponseDTO'
         '404':
           description: Book not found
-    patch:
+    put:
       summary: Update a book by ID
       operationId: updateBook
       tags:
@@ -634,6 +634,9 @@ components:
         isbn:
           type: string
           example: "978-3-16-148410-0"
+        description:
+          type: string
+          example: "Sample book description"
         authorId:
           type: integer
           format: int64
@@ -652,6 +655,9 @@ components:
         title:
           type: string
           example: "Sample Book Title"
+        description:
+          type: string
+          example: "Sample book description"
         isbn:
           type: string
           example: "978-3-16-148410-0"

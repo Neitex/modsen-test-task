@@ -9,6 +9,7 @@ public class BookRequestDTO {
 
   private String title;
   private String isbn;
+  private String description;
   private Long authorId;
   private String genre;
 }

@@ -58,25 +58,31 @@ public class BookService {
       throw new BookDoesNotExist(String.format("Book with ID %s does not exist", id));
     }
     Book existingBook = existing.get();
-    if (bookRequestDTO.getIsbn() != null) {
-      if (bookExistsByIsbn(existingBook.getIsbn()) && !bookRequestDTO.getIsbn()
-          .equals(existingBook.getIsbn())) {
-        throw new BookAlreadyExistsException(
-            String.format("Book with ISBN %s already exists", bookRequestDTO.getIsbn()));
-      }
-      existingBook.setIsbn(bookRequestDTO.getIsbn());
+    if (bookRequestDTO.getIsbn() == null) {
+      throw new MissingFieldException("ISBN is required");
     }
-    if (bookRequestDTO.getTitle() != null) {
-      existingBook.setTitle(bookRequestDTO.getTitle());
+    if (bookExistsByIsbn(existingBook.getIsbn()) && !bookRequestDTO.getIsbn()
+        .equals(existingBook.getIsbn())) {
+      throw new BookAlreadyExistsException(
+          String.format("Book with ISBN %s already exists", bookRequestDTO.getIsbn()));
     }
-    if (bookRequestDTO.getAuthorId() != null) {
-      Optional<Author> author = authorRepository.findById(bookRequestDTO.getAuthorId());
-      if (author.isEmpty()) {
-        throw new AuthorDoesNotExist(
-            String.format("Author with ID %s does not exist", bookRequestDTO.getAuthorId()));
-      }
-      existingBook.setAuthor(author.get());
+    existingBook.setIsbn(bookRequestDTO.getIsbn());
+    if (bookRequestDTO.getTitle() == null) {
+      throw new MissingFieldException("Title is required");
     }
+    existingBook.setTitle(bookRequestDTO.getTitle());
+    if (bookRequestDTO.getAuthorId() == null) {
+      throw new MissingFieldException("Author ID is required");
+    }
+    Optional<Author> author = authorRepository.findById(bookRequestDTO.getAuthorId());
+    if (author.isEmpty()) {
+      throw new AuthorDoesNotExist(
+          String.format("Author with ID %s does not exist", bookRequestDTO.getAuthorId()));
+    }
+    existingBook.setAuthor(author.get());
+
+    existingBook.setGenre(bookRequestDTO.getGenre());
+    existingBook.setDescription(bookRequestDTO.getDescription());
     Book saved = bookRepository.save(existingBook);
     return modelMapper.map(saved, BookResponseDTO.class);
   }
@@ -101,6 +107,7 @@ public class BookService {
     book.setTitle(bookRequestDTO.getTitle());
     book.setAuthor(author.get());
     book.setGenre(bookRequestDTO.getGenre());
+    book.setDescription(bookRequestDTO.getDescription());
     Book saved = bookRepository.save(book);
     libraryClient.updateBook(
         new BookUpdateRequestDTO(saved.getId(), BookUpdateRequestDTO.BookUpdateType.CREATED));
