@@ -16,34 +16,36 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(BookLeaseDoesNotExist.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public ErrorMessage handleBookLeaseDoesNotExistException(BookLeaseDoesNotExist e) {
-    return new ErrorMessage("Book lease does not exist", e.getMessage(), HttpStatus.NOT_FOUND);
+    return new ErrorMessage("Book lease does not exist", e.getMessage(),
+        HttpStatus.NOT_FOUND.value());
   }
 
   @ExceptionHandler(BookLeaseAlreadyExistsException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
   public ErrorMessage handleBookLeaseAlreadyExistsException(BookLeaseAlreadyExistsException e) {
-    return new ErrorMessage("Book lease already exists", e.getMessage(), HttpStatus.CONFLICT);
+    return new ErrorMessage("Book lease already exists", e.getMessage(),
+        HttpStatus.CONFLICT.value());
   }
 
   @ExceptionHandler(BadJWTException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ErrorMessage handleBadJWTException(BadJWTException e) {
-    return new ErrorMessage("Bad JWT", e.getMessage(), HttpStatus.UNAUTHORIZED);
+    return new ErrorMessage("Bad JWT", e.getMessage(), HttpStatus.UNAUTHORIZED.value());
   }
 
   @ExceptionHandler(BadFieldContentsException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorMessage handleBadFieldContentsException(BadFieldContentsException e) {
-    return new ErrorMessage("Bad field contents", e.getMessage(), HttpStatus.BAD_REQUEST);
+    return new ErrorMessage("Bad field contents", e.getMessage(), HttpStatus.BAD_REQUEST.value());
   }
 
   @ExceptionHandler(IllegalLeaseStateException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
   public ErrorMessage handleIllegalLeaseStateException(IllegalLeaseStateException e) {
-    return new ErrorMessage("Illegal lease state", e.getMessage(), HttpStatus.BAD_REQUEST);
+    return new ErrorMessage("Illegal lease state", e.getMessage(), HttpStatus.BAD_REQUEST.value());
   }
 
-  public record ErrorMessage(String error, String message, HttpStatus status) {
+  public record ErrorMessage(String error, String message, int status) {
 
   }
 }
