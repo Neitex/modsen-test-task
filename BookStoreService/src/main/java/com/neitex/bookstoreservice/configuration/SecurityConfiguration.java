@@ -21,14 +21,12 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-            authorizeRequests -> authorizeRequests.dispatcherTypeMatchers(DispatcherType.ERROR,
-                    DispatcherType.INCLUDE, DispatcherType.ASYNC, DispatcherType.FORWARD)
-                .permitAll()
-                .requestMatchers("/**")
+            authorizeRequests -> authorizeRequests.requestMatchers("/actuator/**").permitAll()
+                .dispatcherTypeMatchers(DispatcherType.ERROR, DispatcherType.INCLUDE,
+                    DispatcherType.ASYNC, DispatcherType.FORWARD).permitAll().requestMatchers("/**")
                 .authenticated())
         .addFilterBefore(JwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .cors(AbstractHttpConfigurer::disable)
-        .csrf(AbstractHttpConfigurer::disable)
+        .cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable);
     return http.build();
   }

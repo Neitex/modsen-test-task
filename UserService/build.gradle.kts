@@ -33,6 +33,7 @@ dependencies {
 	implementation("org.modelmapper:modelmapper:3.0.0")
 	implementation("com.auth0:java-jwt:4.4.0")
 	implementation("org.apache.commons:commons-lang3:3.17.0")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")

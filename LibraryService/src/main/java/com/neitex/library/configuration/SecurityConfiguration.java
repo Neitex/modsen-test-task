@@ -20,14 +20,13 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(
-        authorize -> authorize.requestMatchers("/internal-books-lease/updates")
-            .permitAll().dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-            .requestMatchers("/**")
-            .authenticated());
-    http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable);
-    http.httpBasic(AbstractHttpConfigurer::disable);
-    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**").permitAll()
+            .requestMatchers("/internal-books-lease/updates").permitAll()
+            .dispatcherTypeMatchers(DispatcherType.ERROR, DispatcherType.INCLUDE, DispatcherType.ASYNC,
+                DispatcherType.FORWARD).permitAll().requestMatchers("/**").authenticated())
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
+        .httpBasic(AbstractHttpConfigurer::disable);
     return http.build();
   }
 }

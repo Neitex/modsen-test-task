@@ -9,5 +9,6 @@ COPY . /app
 RUN ./gradlew bootJar --parallel
 
 FROM eclipse-temurin:17-alpine
+RUN apk --no-cache add bash curl
 COPY --from=builder /app/build/libs/*.jar /app/app.jar
 CMD ["java", "-jar", "/app/app.jar"]

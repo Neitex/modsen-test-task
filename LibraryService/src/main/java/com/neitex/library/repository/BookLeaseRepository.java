@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookLeaseRepository extends JpaRepository<BookLease, Long> {
 
-  @Query("from BookLease where leaseDate is null or returnDate is not null")
+  @Query("from BookLease where leaseDate is null")
   List<BookLease> findAvailableBooks();
 }
