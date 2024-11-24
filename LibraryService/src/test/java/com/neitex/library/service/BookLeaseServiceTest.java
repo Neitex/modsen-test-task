@@ -10,10 +10,13 @@ import static org.mockito.Mockito.when;
 
 import com.neitex.library.dto.BookLeaseRequestDTO;
 import com.neitex.library.dto.BookLeaseResponseDTO;
+import com.neitex.library.exception.BadFieldContentsException;
 import com.neitex.library.exception.BookLeaseAlreadyExistsException;
 import com.neitex.library.exception.BookLeaseDoesNotExist;
+import com.neitex.library.exception.IllegalLeaseStateException;
 import com.neitex.library.model.BookLease;
 import com.neitex.library.repository.BookLeaseRepository;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,33 +93,6 @@ class BookLeaseServiceTest {
   }
 
   @Test
-  void updateBookLeaseUpdatesAndReturnsBookLeaseResponseDTOWhenBookLeaseExists() {
-    Long bookId = 1L;
-    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
-    BookLease bookLease = new BookLease();
-    BookLeaseResponseDTO responseDTO = new BookLeaseResponseDTO();
-
-    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
-    when(bookLeaseRepository.save(bookLease)).thenReturn(bookLease);
-    when(modelMapper.map(bookLease, BookLeaseResponseDTO.class)).thenReturn(responseDTO);
-
-    BookLeaseResponseDTO result = bookLeaseService.updateBookLease(bookId, requestDTO);
-
-    assertEquals(responseDTO, result);
-  }
-
-  @Test
-  void updateBookLeaseThrowsExceptionWhenBookLeaseDoesNotExist() {
-    Long bookId = 1L;
-    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
-
-    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.empty());
-
-    assertThrows(BookLeaseDoesNotExist.class,
-        () -> bookLeaseService.updateBookLease(bookId, requestDTO));
-  }
-
-  @Test
   void getBookLeasesReturnsListOfBookLeaseResponseDTOs() {
     BookLease bookLease = new BookLease();
     BookLeaseResponseDTO responseDTO = new BookLeaseResponseDTO();
@@ -125,5 +101,126 @@ class BookLeaseServiceTest {
     when(modelMapper.map(bookLease, BookLeaseResponseDTO.class)).thenReturn(responseDTO);
 
     assertEquals(Collections.singletonList(responseDTO), bookLeaseService.getBookLeases());
+  }
+
+  @Test
+  void leaseBookThrowsExceptionWhenBookLeaseDoesNotExist() {
+    Long bookId = 1L;
+    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.empty());
+
+    assertThrows(BookLeaseDoesNotExist.class, () -> bookLeaseService.leaseBook(bookId, requestDTO));
+  }
+
+  @Test
+  void leaseBookThrowsExceptionWhenBookIsAlreadyLeased() {
+    Long bookId = 1L;
+    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
+    BookLease bookLease = new BookLease();
+    bookLease.setLeaseDate(LocalDateTime.now());
+    bookLease.setReturnDate(LocalDateTime.now().plusDays(1));
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
+
+    assertThrows(
+        IllegalLeaseStateException.class, () -> bookLeaseService.leaseBook(bookId, requestDTO));
+  }
+
+  @Test
+  void leaseBookThrowsExceptionWhenLeaseDateIsNotSet() {
+    Long bookId = 1L;
+    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
+
+    BookLease bookLease = new BookLease();
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
+
+    assertThrows(BadFieldContentsException.class,
+        () -> bookLeaseService.leaseBook(bookId, requestDTO));
+  }
+
+  @Test
+  void leaseBookThrowsExceptionWhenReturnDateIsNotSet() {
+    Long bookId = 1L;
+    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
+    requestDTO.setLeaseDate(LocalDateTime.now());
+
+    BookLease bookLease = new BookLease();
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
+
+    assertThrows(BadFieldContentsException.class,
+        () -> bookLeaseService.leaseBook(bookId, requestDTO));
+  }
+
+  @Test
+  void leaseBookThrowsExceptionWhenReturnDateIsBeforeLeaseDate() {
+    Long bookId = 1L;
+    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
+    requestDTO.setLeaseDate(LocalDateTime.now());
+    requestDTO.setReturnDate(LocalDateTime.now().minusDays(1));
+
+    BookLease bookLease = new BookLease();
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
+
+    assertThrows(BadFieldContentsException.class,
+        () -> bookLeaseService.leaseBook(bookId, requestDTO));
+  }
+
+  @Test
+  void leaseBookLeasesBookSuccessfully() {
+    Long bookId = 1L;
+    BookLeaseRequestDTO requestDTO = new BookLeaseRequestDTO();
+    requestDTO.setLeaseDate(LocalDateTime.now());
+    requestDTO.setReturnDate(LocalDateTime.now().plusDays(1));
+
+    BookLease bookLease = new BookLease();
+    BookLeaseResponseDTO responseDTO = new BookLeaseResponseDTO();
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
+    when(bookLeaseRepository.save(any(BookLease.class))).thenReturn(bookLease);
+    when(modelMapper.map(bookLease, BookLeaseResponseDTO.class)).thenReturn(responseDTO);
+
+    BookLeaseResponseDTO result = bookLeaseService.leaseBook(bookId, requestDTO);
+
+    assertEquals(responseDTO, result);
+  }
+
+  @Test
+  void returnBookThrowsExceptionWhenBookLeaseDoesNotExist() {
+    Long bookId = 1L;
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.empty());
+
+    assertThrows(BookLeaseDoesNotExist.class, () -> bookLeaseService.returnBook(bookId));
+  }
+
+  @Test
+  void returnBookThrowsExceptionWhenBookIsNotLeased() {
+    Long bookId = 1L;
+    BookLease bookLease = new BookLease();
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
+
+    assertThrows(IllegalLeaseStateException.class, () -> bookLeaseService.returnBook(bookId));
+  }
+
+  @Test
+  void returnBookReturnsBookSuccessfully() {
+    Long bookId = 1L;
+    BookLease bookLease = new BookLease();
+    bookLease.setLeaseDate(LocalDateTime.now());
+    bookLease.setReturnDate(LocalDateTime.now().plusDays(1));
+    BookLeaseResponseDTO responseDTO = new BookLeaseResponseDTO();
+
+    when(bookLeaseRepository.findById(bookId)).thenReturn(Optional.of(bookLease));
+    when(bookLeaseRepository.save(any(BookLease.class))).thenReturn(bookLease);
+    when(modelMapper.map(bookLease, BookLeaseResponseDTO.class)).thenReturn(responseDTO);
+
+    BookLeaseResponseDTO result = bookLeaseService.returnBook(bookId);
+
+    assertEquals(responseDTO, result);
   }
 }

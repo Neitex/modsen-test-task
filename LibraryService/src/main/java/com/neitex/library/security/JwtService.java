@@ -18,7 +18,7 @@ public class JwtService {
   }
 
   public GlobalUserDetails getUserDetails(
-      String token) { // kind of dirty, but I'm not sure book storage microservice should have users
+      String token) {
     try {
       DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
       return new GlobalUserDetails(jwt.getClaim("login").asString(),

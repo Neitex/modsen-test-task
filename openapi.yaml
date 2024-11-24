@@ -197,9 +197,10 @@ paths:
       x-security-roles:
         - EDITOR
         - VIEWER
-    patch:
-      summary: Update a book lease by book ID
-      operationId: updateBookLease
+  /books-lease/leases/{bookId}/lease:
+    post:
+      summary: Lease a book
+      operationId: leaseBook
       tags:
         - Book Lease
       parameters:
@@ -226,6 +227,32 @@ paths:
           description: Forbidden. User does not have the required roles.
         '404':
           description: Book lease not found
+        '409':
+          description: Book is already leased
+      x-security-roles:
+        - EDITOR
+  /books-lease/leases/{bookId}/return:
+    post:
+      summary: Return a leased book
+      operationId: returnBook
+      tags:
+        - Book Lease
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Book returned successfully
+        '403':
+          description: Forbidden. User does not have the required roles.
+        '404':
+          description: Book lease not found
+        '409':
+          description: Book is not leased
       x-security-roles:
         - EDITOR
 
@@ -500,7 +527,7 @@ components:
         returnDate:
           type: string
           format: date-time
-          description: The date the book is expected to be returned.
+          description: The date the book is expected to be returned. Must be after the lease date.
 
     BookLeaseResponseDTO:
       type: object
