@@ -255,7 +255,26 @@ paths:
           description: Book is not leased
       x-security-roles:
         - EDITOR
-
+  /books-lease/leases/available:
+    get:
+      summary: Get list of available books
+      operationId: getAvailableBooks
+      tags:
+        - Book Lease
+      responses:
+        '200':
+          description: A list of available books retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponseDTO'
+        '403':
+          description: Forbidden. User does not have the required roles.
+      x-security-roles:
+        - EDITOR
+        - VIEWER
   /authors:
     get:
       summary: Get all authors

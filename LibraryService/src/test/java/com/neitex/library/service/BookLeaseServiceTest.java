@@ -17,7 +17,9 @@ import com.neitex.library.exception.IllegalLeaseStateException;
 import com.neitex.library.model.BookLease;
 import com.neitex.library.repository.BookLeaseRepository;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -222,5 +224,22 @@ class BookLeaseServiceTest {
     BookLeaseResponseDTO result = bookLeaseService.returnBook(bookId);
 
     assertEquals(responseDTO, result);
+  }
+
+  @Test
+  void getAvailableBooksReturnsAvailableBooks() {
+    BookLease bookLease1 = new BookLease();
+    BookLease bookLease2 = new BookLease();
+    BookLeaseResponseDTO responseDTO1 = new BookLeaseResponseDTO();
+    BookLeaseResponseDTO responseDTO2 = new BookLeaseResponseDTO();
+
+    when(bookLeaseRepository.findAvailableBooks()).thenReturn(
+        Arrays.asList(bookLease1, bookLease2));
+    when(modelMapper.map(bookLease1, BookLeaseResponseDTO.class)).thenReturn(responseDTO1);
+    when(modelMapper.map(bookLease2, BookLeaseResponseDTO.class)).thenReturn(responseDTO2);
+
+    List<BookLeaseResponseDTO> result = bookLeaseService.getAvailableBooks();
+
+    assertEquals(Arrays.asList(responseDTO1, responseDTO2), result);
   }
 }

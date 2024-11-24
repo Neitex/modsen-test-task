@@ -83,4 +83,10 @@ public class BookLeaseService {
         .map(bookLease -> modelMapper.map(bookLease, BookLeaseResponseDTO.class))
         .collect(Collectors.toList());
   }
+
+  public List<BookLeaseResponseDTO> getAvailableBooks() {
+    return bookLeaseRepository.findAvailableBooks().stream()
+        .map(bookLease -> modelMapper.map(bookLease, BookLeaseResponseDTO.class))
+        .collect(Collectors.toList());
+  }
 }

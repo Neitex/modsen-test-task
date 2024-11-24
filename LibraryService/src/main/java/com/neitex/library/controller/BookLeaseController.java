@@ -44,4 +44,10 @@ public class BookLeaseController {
   public BookLeaseResponseDTO returnBook(@PathVariable("bookId") Long bookId) {
     return bookLeaseService.returnBook(bookId);
   }
+
+  @PreAuthorize("hasRole('VIEWER') or hasRole('EDITOR')")
+  @GetMapping("/leases/available")
+  public List<BookLeaseResponseDTO> getAvailableBooks() {
+    return bookLeaseService.getAvailableBooks();
+  }
 }

@@ -116,13 +116,16 @@ class BookServiceTest {
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
     bookRequestDTO.setIsbn("123");
     bookRequestDTO.setTitle("New Title");
+    bookRequestDTO.setGenre("Genre");
     bookRequestDTO.setAuthorId(2L);
+    bookRequestDTO.setDescription("Description");
     BookResponseDTO result = bookService.updateBook(1L, bookRequestDTO);
 
     assertEquals(1L, result.getId());
     assertEquals("123", result.getIsbn());
     assertEquals("New Title", result.getTitle());
     assertEquals("Genre", result.getGenre());
+    assertEquals("Description", result.getDescription());
     assertEquals("Name2", result.getAuthor().getName());
   }
 
