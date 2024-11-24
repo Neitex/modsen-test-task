@@ -1,4 +1,4 @@
-package com.neitex.bookstoreservice.exception;
+package com.neitex.users.exception;
 
 public class MissingFieldException extends RuntimeException {
 

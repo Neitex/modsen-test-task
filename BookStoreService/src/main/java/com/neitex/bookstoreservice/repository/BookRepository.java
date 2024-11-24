@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepository extends CrudRepository<Book, Long> {
 
-  Optional<Book> findBookByISBN(String ISBN);
+  Optional<Book> findBookByIsbn(String isbn);
 
-  boolean existsByISBN(String ISBN);
+  boolean existsByIsbn(String isbn);
 
   @NonNull
   List<Book> findAll();

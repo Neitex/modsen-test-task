@@ -4,7 +4,6 @@ import com.neitex.bookstoreservice.dto.BookRequestDTO;
 import com.neitex.bookstoreservice.dto.BookResponseDTO;
 import com.neitex.bookstoreservice.service.BookService;
 import java.util.List;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,14 +30,14 @@ public class BookController {
 
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
   @GetMapping("/book/{id}")
-  public Optional<BookResponseDTO> getBookById(@PathVariable("id") Long id) {
-    return bookService.findBookById(id);
+  public BookResponseDTO getBookById(@PathVariable("id") Long id) {
+    return bookService.getBookByID(id);
   }
 
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")
   @GetMapping("/book/by-isbn/{isbn}")
-  public Optional<BookResponseDTO> getBookByISBN(@PathVariable("isbn") String isbn) {
-    return bookService.findBookByISBN(isbn);
+  public BookResponseDTO getBookByIsbn(@PathVariable("isbn") String isbn) {
+    return bookService.findBookByIsbn(isbn);
   }
 
   @PreAuthorize("hasRole('EDITOR') or hasRole('VIEWER')")

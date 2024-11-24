@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class BookRequestDTO {
 
   private String title;
-  private String ISBN;
+  private String isbn;
   private Long authorId;
   private String genre;
 }

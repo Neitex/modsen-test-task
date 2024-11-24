@@ -3,7 +3,6 @@ package com.neitex.bookstoreservice.service;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
@@ -49,56 +48,48 @@ class BookServiceTest {
   }
 
   @Test
-  void findBookByIdReturnsBookResponseDTO() {
+  void getBookByIdReturnsBookResponseDTO() {
     Book book = new Book();
     book.setId(1L);
     BookResponseDTO bookResponseDTO = new BookResponseDTO();
     bookResponseDTO.setId(1L);
     when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
-    Optional<BookResponseDTO> result = bookService.findBookById(1L);
-
-    assertTrue(result.isPresent());
-    assertEquals(bookResponseDTO, result.get());
+    BookResponseDTO result = bookService.getBookByID(1L);
+    assertEquals(bookResponseDTO, result);
   }
 
   @Test
-  void findBookByIdReturnsEmptyWhenBookNotFound() {
+  void getBookById_throwsWhenBookNotFound() {
     when(bookRepository.findById(1L)).thenReturn(Optional.empty());
-
-    Optional<BookResponseDTO> result = bookService.findBookById(1L);
-
-    assertFalse(result.isPresent());
+    assertThrows(BookDoesNotExist.class, () -> bookService.getBookByID(1L));
   }
 
   @Test
   void findBookByISBNReturnsBookResponseDTO() {
     Book book = new Book();
-    book.setISBN("1234567890");
+    book.setIsbn("1234567890");
     BookResponseDTO bookResponseDTO = new BookResponseDTO();
-    bookResponseDTO.setISBN("1234567890");
-    when(bookRepository.findBookByISBN("1234567890")).thenReturn(Optional.of(book));
+    bookResponseDTO.setIsbn("1234567890");
+    when(bookRepository.findBookByIsbn("1234567890")).thenReturn(Optional.of(book));
 
-    Optional<BookResponseDTO> result = bookService.findBookByISBN("1234567890");
+    BookResponseDTO result = bookService.findBookByIsbn("1234567890");
 
-    assertTrue(result.isPresent());
-    assertEquals(bookResponseDTO, result.get());
+    assertEquals(bookResponseDTO, result);
   }
 
   @Test
-  void findBookByISBNReturnsEmptyWhenBookNotFound() {
-    when(bookRepository.findBookByISBN("1234567890")).thenReturn(Optional.empty());
+  void findBookByISBN_throwsWhenBookNotFound() {
+    when(bookRepository.findBookByIsbn("1234567890")).thenReturn(Optional.empty());
 
-    Optional<BookResponseDTO> result = bookService.findBookByISBN("1234567890");
-
-    assertFalse(result.isPresent());
+    assertThrows(BookDoesNotExist.class, () -> bookService.findBookByIsbn("1234567890"));
   }
 
   @Test
   void bookExistsByISBNReturnsTrueWhenBookExists() {
-    when(bookRepository.existsByISBN("1234567890")).thenReturn(true);
+    when(bookRepository.existsByIsbn("1234567890")).thenReturn(true);
 
-    boolean result = bookService.bookExistsByISBN("1234567890");
+    boolean result = bookService.bookExistsByIsbn("1234567890");
 
     assertTrue(result);
   }
@@ -107,7 +98,7 @@ class BookServiceTest {
   void updateBookUpdatesBookWhenExists() {
     Book book = new Book();
     book.setId(1L);
-    book.setISBN("1234567890");
+    book.setIsbn("1234567890");
     book.setTitle("Title");
     book.setGenre("Genre");
     Author a = new Author();
@@ -123,13 +114,13 @@ class BookServiceTest {
     when(authorRepository.findById(2L)).thenReturn(Optional.of(b));
 
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
-    bookRequestDTO.setISBN("123");
+    bookRequestDTO.setIsbn("123");
     bookRequestDTO.setTitle("New Title");
     bookRequestDTO.setAuthorId(2L);
     BookResponseDTO result = bookService.updateBook(1L, bookRequestDTO);
 
     assertEquals(1L, result.getId());
-    assertEquals("123", result.getISBN());
+    assertEquals("123", result.getIsbn());
     assertEquals("New Title", result.getTitle());
     assertEquals("Genre", result.getGenre());
     assertEquals("Name2", result.getAuthor().getName());
@@ -140,7 +131,7 @@ class BookServiceTest {
     when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
-    bookRequestDTO.setISBN("123");
+    bookRequestDTO.setIsbn("123");
 
     assertThrows(BookDoesNotExist.class, () -> bookService.updateBook(1L, bookRequestDTO));
   }
@@ -149,7 +140,7 @@ class BookServiceTest {
   void updateBookThrowsWhenNewAuthorDoesNotExist() {
     Book book = new Book();
     book.setId(1L);
-    book.setISBN("1234567890");
+    book.setIsbn("1234567890");
     book.setTitle("Title");
     book.setGenre("Genre");
     Author a = new Author();
@@ -161,7 +152,7 @@ class BookServiceTest {
     when(authorRepository.findById(2L)).thenReturn(Optional.empty());
 
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
-    bookRequestDTO.setISBN("123");
+    bookRequestDTO.setIsbn("123");
     bookRequestDTO.setTitle("New Title");
     bookRequestDTO.setAuthorId(2L);
 
@@ -190,25 +181,25 @@ class BookServiceTest {
 
   @Test
   void createBookSuccessfulWhenBookIsNew() {
-    when(bookRepository.existsByISBN("1234567890")).thenReturn(false);
+    when(bookRepository.existsByIsbn("1234567890")).thenReturn(false);
     Author a = new Author();
     a.setId(1L);
     a.setName("Name");
     when(authorRepository.findById(1L)).thenReturn(Optional.of(a));
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
-    bookRequestDTO.setISBN("1234567890");
+    bookRequestDTO.setIsbn("1234567890");
     bookRequestDTO.setTitle("Title");
     bookRequestDTO.setAuthorId(1L);
     bookRequestDTO.setGenre("Genre");
     Book book = new Book();
-    book.setISBN("1234567890");
+    book.setIsbn("1234567890");
     book.setTitle("Title");
     book.setGenre("Genre");
     book.setAuthor(a);
     when(bookRepository.save(Mockito.any(Book.class))).thenReturn(book);
     BookResponseDTO result = bookService.createBook(bookRequestDTO);
 
-    assertEquals("1234567890", result.getISBN());
+    assertEquals("1234567890", result.getIsbn());
     assertEquals("Title", result.getTitle());
     assertEquals("Genre", result.getGenre());
     assertEquals("Name", result.getAuthor().getName());
@@ -217,10 +208,10 @@ class BookServiceTest {
 
   @Test
   void createBookThrowsWhenAuthorDoesNotExist() {
-    when(bookRepository.existsByISBN("1234567890")).thenReturn(false);
+    when(bookRepository.existsByIsbn("1234567890")).thenReturn(false);
     when(authorRepository.findById(1L)).thenReturn(Optional.empty());
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
-    bookRequestDTO.setISBN("1234567890");
+    bookRequestDTO.setIsbn("1234567890");
     bookRequestDTO.setTitle("Title");
     bookRequestDTO.setAuthorId(1L);
     bookRequestDTO.setGenre("Genre");
@@ -230,9 +221,9 @@ class BookServiceTest {
 
   @Test
   void createBookThrowsWhenISBNIsTaken() {
-    when(bookRepository.existsByISBN("1234567890")).thenReturn(true);
+    when(bookRepository.existsByIsbn("1234567890")).thenReturn(true);
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
-    bookRequestDTO.setISBN("1234567890");
+    bookRequestDTO.setIsbn("1234567890");
     bookRequestDTO.setTitle("Title");
     bookRequestDTO.setAuthorId(1L);
     bookRequestDTO.setGenre("Genre");
@@ -244,7 +235,7 @@ class BookServiceTest {
   void createBookThrowsWhenRequiredFieldsAreMissing() {
     BookRequestDTO bookRequestDTO = new BookRequestDTO();
     assertThrows(MissingFieldException.class, () -> bookService.createBook(bookRequestDTO));
-    bookRequestDTO.setISBN("123");
+    bookRequestDTO.setIsbn("123");
     assertThrows(MissingFieldException.class, () -> bookService.createBook(bookRequestDTO));
     bookRequestDTO.setTitle("Title");
     assertThrows(MissingFieldException.class, () -> bookService.createBook(bookRequestDTO));
@@ -261,15 +252,15 @@ class BookServiceTest {
     author.setName("Name");
     Book bookA = new Book();
     bookA.setId(1L);
-    bookA.setISBN("1");
+    bookA.setIsbn("1");
     bookA.setAuthor(author);
     Book bookB = new Book();
     bookB.setId(2L);
-    bookB.setISBN("2");
+    bookB.setIsbn("2");
     bookB.setAuthor(author);
     Book bookC = new Book();
     bookC.setId(3L);
-    bookC.setISBN("3");
+    bookC.setIsbn("3");
     bookC.setAuthor(author);
     when(bookRepository.findAll()).thenReturn(List.of(bookA, bookB, bookC));
     assertEquals(3, bookService.getBooks().size());
@@ -286,17 +277,18 @@ class BookServiceTest {
     author.setName("Name");
     Book bookA = new Book();
     bookA.setId(1L);
-    bookA.setISBN("1");
+    bookA.setIsbn("1");
     bookA.setAuthor(author);
     Book bookB = new Book();
     bookB.setId(2L);
-    bookB.setISBN("2");
+    bookB.setIsbn("2");
     bookB.setAuthor(author);
     Book bookC = new Book();
     bookC.setId(3L);
-    bookC.setISBN("3");
+    bookC.setIsbn("3");
     bookC.setAuthor(author);
     when(bookRepository.findBooksByAuthorId(1L)).thenReturn(List.of(bookA, bookB, bookC));
+    when(authorRepository.existsById(1L)).thenReturn(true);
     assertEquals(3, bookService.findBooksByAuthor(1L).size());
     assertArrayEquals(List.of(modelMapper.map(bookA, BookResponseDTO.class),
             modelMapper.map(bookB, BookResponseDTO.class),

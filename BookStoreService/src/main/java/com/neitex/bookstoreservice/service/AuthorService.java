@@ -7,6 +7,7 @@ import com.neitex.bookstoreservice.exception.AuthorAlreadyExistsException;
 import com.neitex.bookstoreservice.exception.AuthorDoesNotExist;
 import com.neitex.bookstoreservice.exception.AuthorHasBooksException;
 import com.neitex.bookstoreservice.repository.AuthorRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class AuthorService {
 
   private final AuthorRepository authorRepository;

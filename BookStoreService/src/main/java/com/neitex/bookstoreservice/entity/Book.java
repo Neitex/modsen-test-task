@@ -22,7 +22,7 @@ public class Book {
   private Long id;
   private String title;
   @Column(unique = true)
-  private String ISBN;
+  private String isbn;
   @ManyToOne
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Author author;

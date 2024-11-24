@@ -13,6 +13,7 @@ import com.neitex.bookstoreservice.exception.MissingFieldException;
 import com.neitex.bookstoreservice.repository.AuthorRepository;
 import com.neitex.bookstoreservice.repository.BookRepository;
 import com.neitex.bookstoreservice.util.NullUtils;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class BookService {
 
   private final BookRepository bookRepository;
@@ -29,21 +31,24 @@ public class BookService {
   private final ModelMapper modelMapper;
   private final LibraryClient libraryClient;
 
-  public Optional<BookResponseDTO> findBookById(Long id) {
-    return bookRepository.findById(id).map(book -> modelMapper.map(book, BookResponseDTO.class));
+  public BookResponseDTO getBookByID(Long id) {
+    return bookRepository.findById(id).map(book -> modelMapper.map(book, BookResponseDTO.class))
+        .orElseThrow(
+            () -> new BookDoesNotExist(String.format("Book with ID %s does not exist", id)));
   }
 
-  public Optional<BookResponseDTO> findBookByISBN(String ISBN) {
-    return bookRepository.findBookByISBN(ISBN)
-        .map(book -> modelMapper.map(book, BookResponseDTO.class));
+  public BookResponseDTO findBookByIsbn(String isbn) {
+    return bookRepository.findBookByIsbn(isbn)
+        .map(book -> modelMapper.map(book, BookResponseDTO.class)).orElseThrow(
+            () -> new BookDoesNotExist(String.format("Book with ISBN %s does not exist", isbn)));
   }
 
   public boolean bookExistsById(Long id) {
     return bookRepository.existsById(id);
   }
 
-  public boolean bookExistsByISBN(String ISBN) {
-    return bookRepository.existsByISBN(ISBN);
+  public boolean bookExistsByIsbn(String isbn) {
+    return bookRepository.existsByIsbn(isbn);
   }
 
   public BookResponseDTO updateBook(Long id, BookRequestDTO bookRequestDTO) {
@@ -53,8 +58,13 @@ public class BookService {
       throw new BookDoesNotExist(String.format("Book with ID %s does not exist", id));
     }
     Book existingBook = existing.get();
-    if (bookRequestDTO.getISBN() != null) {
-      existingBook.setISBN(bookRequestDTO.getISBN());
+    if (bookRequestDTO.getIsbn() != null) {
+      if (bookExistsByIsbn(existingBook.getIsbn()) && !bookRequestDTO.getIsbn()
+          .equals(existingBook.getIsbn())) {
+        throw new BookAlreadyExistsException(
+            String.format("Book with ISBN %s already exists", bookRequestDTO.getIsbn()));
+      }
+      existingBook.setIsbn(bookRequestDTO.getIsbn());
     }
     if (bookRequestDTO.getTitle() != null) {
       existingBook.setTitle(bookRequestDTO.getTitle());
@@ -73,13 +83,13 @@ public class BookService {
 
   public BookResponseDTO createBook(BookRequestDTO bookRequestDTO) {
     Objects.requireNonNull(bookRequestDTO, "Book cannot be null");
-    if (NullUtils.anyNull(bookRequestDTO.getISBN(), bookRequestDTO.getTitle(),
+    if (NullUtils.anyNull(bookRequestDTO.getIsbn(), bookRequestDTO.getTitle(),
         bookRequestDTO.getAuthorId())) {
       throw new MissingFieldException("ISBN, title and author ID are required");
     }
-    if (bookExistsByISBN(bookRequestDTO.getISBN())) {
+    if (bookExistsByIsbn(bookRequestDTO.getIsbn())) {
       throw new BookAlreadyExistsException(
-          String.format("Book with ISBN %s already exists", bookRequestDTO.getISBN()));
+          String.format("Book with ISBN %s already exists", bookRequestDTO.getIsbn()));
     }
     Optional<Author> author = authorRepository.findById(bookRequestDTO.getAuthorId());
     if (author.isEmpty()) {
@@ -87,18 +97,13 @@ public class BookService {
           String.format("Author with ID %s does not exist", bookRequestDTO.getAuthorId()));
     }
     Book book = new Book();
-    book.setISBN(bookRequestDTO.getISBN());
+    book.setIsbn(bookRequestDTO.getIsbn());
     book.setTitle(bookRequestDTO.getTitle());
     book.setAuthor(author.get());
     book.setGenre(bookRequestDTO.getGenre());
     Book saved = bookRepository.save(book);
-    try {
-      libraryClient.updateBook(
-          new BookUpdateRequestDTO(saved.getId(), BookUpdateRequestDTO.BookUpdateType.CREATED));
-    } catch (Exception e) {
-      bookRepository.delete(saved);
-      throw e;
-    }
+    libraryClient.updateBook(
+        new BookUpdateRequestDTO(saved.getId(), BookUpdateRequestDTO.BookUpdateType.CREATED));
     return modelMapper.map(saved, BookResponseDTO.class);
   }
 
@@ -112,10 +117,8 @@ public class BookService {
   }
 
   public List<BookResponseDTO> getBooks() {
-    return bookRepository.findAll()
-        .stream()
-        .map(book -> modelMapper.map(book, BookResponseDTO.class))
-        .toList();
+    return bookRepository.findAll().stream()
+        .map(book -> modelMapper.map(book, BookResponseDTO.class)).toList();
   }
 
   public int countBooksByAuthor(Long authorId) {
@@ -126,9 +129,7 @@ public class BookService {
     if (!authorRepository.existsById(authorId)) {
       throw new AuthorDoesNotExist(String.format("Author with ID %s does not exist", authorId));
     }
-    return bookRepository.findBooksByAuthorId(authorId)
-        .stream()
-        .map(book -> modelMapper.map(book, BookResponseDTO.class))
-        .toList();
+    return bookRepository.findBooksByAuthorId(authorId).stream()
+        .map(book -> modelMapper.map(book, BookResponseDTO.class)).toList();
   }
 }

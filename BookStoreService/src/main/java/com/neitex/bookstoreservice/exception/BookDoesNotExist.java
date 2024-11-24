@@ -1,11 +1,8 @@
 package com.neitex.bookstoreservice.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
-public class BookDoesNotExist extends ResponseStatusException {
+public class BookDoesNotExist extends RuntimeException {
 
   public BookDoesNotExist(String message) {
-    super(HttpStatus.NOT_FOUND, message);
+    super(message);
   }
 }

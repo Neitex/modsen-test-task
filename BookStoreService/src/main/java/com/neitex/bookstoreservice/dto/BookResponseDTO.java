@@ -8,7 +8,7 @@ public class BookResponseDTO {
 
   private Long id;
   private String title;
-  private String ISBN;
+  private String isbn;
   private Author author;
   private String genre;
 }
