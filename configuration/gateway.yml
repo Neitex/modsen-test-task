@@ -12,7 +12,7 @@ spring:
         - id: users
           uri: lb://userService
           predicates:
-            - Path=/users/{segment1},/users/{segment1}/{segment2}
+            - Path=/users/{segment1},/users/{segment1}/{segment2},/users
           filters:
             - JwtFilter
         - id: users-login
